@@ -1,204 +1,277 @@
-<!doctype html><html lang="bg"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/><title>Schwyzerdütsch – Learn Swiss German</title><script src="https://unpkg.com/react@18/umd/react.production.min.js"></script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script><script src="https://unpkg.com/@babel/standalone/babel.min.js"></script></head><body style="margin:0;background:#F5F5F5"><div id="root"></div><script type="text/babel">const {useState,useEffect,useRef}=React;
-const CO={A1:1,A2:2,B1:3,B2:4},CL=["A1","A2","B1","B2"];
-function nL(l){return CO[l]?l:"A1";}
-function aL(c){if(c===0||c===6)return"A1";if(c===1||c===2||c===3||c===7||c===8)return"A2";return"B1";}
-function gL(w){return w.lvl||aL(w.cat);}
-function pL(lv,m){const mx=CO[nL(lv)];if(m==="upto")return V.filter(w=>CO[gL(w)]<=mx);return V.filter(w=>gL(w)===lv);}
-function iL(l,lv,m){if(m==="only")return l===lv;return CO[l]<=CO[lv];}
+<!DOCTYPE html>
+<html lang="bg"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Schwyzerdütsch</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0b0b1a;color:#e0e0f0;min-height:100vh;
+background-image:radial-gradient(ellipse at 15% 50%,rgba(100,40,200,.18),transparent 55%),radial-gradient(ellipse at 85% 15%,rgba(220,40,80,.12),transparent 50%),radial-gradient(ellipse at 50% 85%,rgba(0,160,220,.1),transparent 50%);background-attachment:fixed}
+#app{max-width:860px;margin:0 auto;padding-bottom:80px}
+.hdr{position:sticky;top:0;z-index:99;background:rgba(11,11,26,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:0}
+.hdr-top{padding:8px 14px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-text{font-weight:800;font-size:.95rem;background:linear-gradient(135deg,#ff6b9d,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{font-size:.48rem;color:rgba(255,255,255,.35)}
+.nav{display:grid;grid-template-columns:repeat(4,1fr)}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(255,255,255,.35);font-family:inherit;font-size:.5rem;padding:8px 2px 6px;cursor:pointer;border-bottom:2px solid transparent;font-weight:600}
+.nb.on{color:#ff6b9d;border-bottom-color:#ff6b9d;background:rgba(255,107,157,.05)}
+.nb .ic{font-size:1.05rem}
+.cR{display:flex;align-items:center;gap:5px;padding:5px 12px;justify-content:center;flex-wrap:wrap}
+.cb{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.04);color:rgba(255,255,255,.35);padding:4px 11px;border-radius:20px;cursor:pointer;font-weight:800;font-size:.58rem;font-family:inherit}
+.cA{color:#ff6b9d;border-color:rgba(255,107,157,.35);background:rgba(255,107,157,.1)}
+.cD{opacity:.28}
+.tm{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgba(255,255,255,.35);padding:4px 11px;border-radius:20px;cursor:pointer;font-weight:700;font-size:.54rem;font-family:inherit}
+.tA{color:#ff6b9d;border-color:rgba(255,107,157,.3);background:rgba(255,107,157,.08)}
+.G{background:rgba(255,255,255,.055);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.09);border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.35);padding:14px;margin-bottom:10px}
+.GW{box-shadow:0 0 24px rgba(120,50,220,.12),0 4px 20px rgba(0,0,0,.35)}
+.sb{background:rgba(100,255,170,.08);border:1px solid rgba(100,255,170,.22);border-radius:20px;padding:5px 12px;color:#6dffa8;font-size:.63rem;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:3px;font-weight:700}
+.bt{background:linear-gradient(135deg,#ff6b9d,#c084fc);border:none;border-radius:14px;padding:13px 32px;color:#fff;font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(255,107,157,.25)}
+.b2{padding:9px 18px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.55);font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
+button:focus{outline:none}input:focus{outline:none}
+.pk{color:#ff6b9d}.pr{color:#c084fc}.gn{color:#6dffa8}.gl{color:#ffd700}
+.wrd{padding:14px;margin-bottom:10px;border-radius:16px;background:rgba(255,255,255,.055);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.09);box-shadow:0 4px 20px rgba(0,0,0,.35)}
+.opt{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;font-family:inherit;font-size:.86rem;color:rgba(255,255,255,.65);cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;font-weight:600;margin-bottom:7px;width:100%}
+.opt.ok{background:rgba(100,255,160,.1);border-color:rgba(100,255,160,.3);color:#6dffa8}
+.opt.no{background:rgba(255,70,70,.1);border-color:rgba(255,70,70,.3);color:#ff5050}
+.olbl{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.68rem;flex-shrink:0;color:rgba(255,255,255,.35)}
+.dlg-line{display:flex;gap:8px;margin-bottom:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.dlg-av{font-weight:800;font-size:.68rem;width:24px;height:24px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fc{perspective:1000px;max-width:360px;margin:0 auto;cursor:pointer}
+.fi{min-height:250px;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.ff{position:absolute;width:100%;min-height:250px;backface-visibility:hidden;border-radius:20px;padding:26px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.f1{background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.f2{transform:rotateY(180deg);background:linear-gradient(145deg,rgba(255,107,157,.08),rgba(192,132,252,.06));border:1px solid rgba(255,107,157,.18)}
+@media(max-width:420px){.cb{padding:3px 8px;font-size:.52rem}.tm{padding:3px 8px;font-size:.5rem}.nb{font-size:.44rem;padding:6px 1px 4px}}
+</style></head><body>
+<div id="app"></div>
+<script>
+"use strict";
 const V=[{"c": "Grüezi", "d": "Guten Tag", "bg": "Здравейте", "en": "Hello", "p": "ГРЮЕ-ци", "pe": "GREW-tsi", "x": "Grüezi mitenand!", "cat": 0, "em": "👋", "mb": "Грю те поздравява", "me": "Like grew-tsi"}, {"c": "Hoi", "d": "Hallo", "bg": "Здрасти", "en": "Hi", "p": "ХОЙ", "pe": "HOY", "x": "Hoi, wie gaht's?", "cat": 0, "em": "✋", "mb": "Хой! На приятел", "me": "Like ahoy!"}, {"c": "Sali", "d": "Hallo", "bg": "Здрасти (Базел)", "en": "Hi (Basel)", "p": "СА-ли", "pe": "SA-lee", "x": "Sali zäme!", "cat": 0, "em": "🤚", "mb": "Сали = салют", "me": "Like salute"}, {"c": "Guete Morge", "d": "Guten Morgen", "bg": "Добро утро", "en": "Good morning", "p": "ГУЕ-те МОР-ге", "pe": "GOO-teh MOR-geh", "x": "Guete Morge mitenand!", "cat": 0, "em": "🌅", "mb": "Морге = сутрин", "me": "Morning"}, {"c": "Guete Abig", "d": "Guten Abend", "bg": "Добър вечер", "en": "Good evening", "p": "ГУЕ-те А-биг", "pe": "GOO-teh AH-big", "x": "Guete Abig!", "cat": 0, "em": "🌆", "mb": "Абиг = вечер", "me": "Evening"}, {"c": "Guet Nacht", "d": "Gute Nacht", "bg": "Лека нощ", "en": "Good night", "p": "ГУЕТ НАХТ", "pe": "goot NAKHT", "x": "Guet Nacht!", "cat": 0, "em": "🌙", "mb": "Нахт = нощ", "me": "Night"}, {"c": "Uf Widerluege", "d": "Auf Wiedersehen", "bg": "Довиждане", "en": "Goodbye", "p": "УФ ВИ-дер-ЛУЕ-ге", "pe": "oof VEE-der-LOO-geh", "x": "Uf Widerluege!", "cat": 0, "em": "🫡", "mb": "Видер лъже! Тръгвам", "me": "See again"}, {"c": "Adé", "d": "Tschüss", "bg": "Чао", "en": "Bye", "p": "а-ДЕ", "pe": "ah-DEH", "x": "Adé mitenand!", "cat": 0, "em": "💛", "mb": "Аде = чао", "me": "French adieu"}, {"c": "Merci vilmal", "d": "Vielen Dank", "bg": "Благодаря много", "en": "Thanks a lot", "p": "мер-СИ ВИЛ-мал", "pe": "mair-SEE VILL-mahl", "x": "Merci vilmal!", "cat": 0, "em": "🙏", "mb": "Мерси + вилмал", "me": "French merci"}, {"c": "Bitte", "d": "Bitte", "bg": "Моля", "en": "Please", "p": "БИ-те", "pe": "BIT-teh", "x": "Bitte schön!", "cat": 0, "em": "😊", "mb": "Бите = моля", "me": "Same as German"}, {"c": "Exgüsi", "d": "Entschuldigung", "bg": "Извинете", "en": "Excuse me", "p": "екс-ГЮ-зи", "pe": "eks-GEW-zee", "x": "Exgüsi, wo isch de Bahnhof?", "cat": 0, "em": "🙋", "mb": "Excuse → Exgüsi", "me": "Excuse-y"}, {"c": "Es tuet mer leid", "d": "Es tut mir leid", "bg": "Съжалявам", "en": "I'm sorry", "p": "ес ТУЕТ мер ЛАЙД", "pe": "es TOO-et mair LIDE", "x": "Es tuet mer leid!", "cat": 0, "em": "😔", "mb": "Тует мер = прави ми", "me": "Does me sorrow"}, {"c": "Grüezi wohl", "d": "Guten Tag", "bg": "Здравейте (учтиво)", "en": "Hello (very formal)", "p": "ГРЮЕ-ци ВОЛ", "pe": "GREW-tsi VOHL", "x": "Grüezi wohl, Herr Müller.", "cat": 0, "em": "🎩", "mb": "Вол = наистина", "me": "Formal greeting"}, {"c": "Tschau", "d": "Tschüss", "bg": "Чао", "en": "Ciao", "p": "ЧАУ", "pe": "CHOW", "x": "Tschau zäme!", "cat": 0, "em": "✌️", "mb": "Чау = от италиански", "me": "Italian ciao"}, {"c": "Zmorge", "d": "Frühstück", "bg": "Закуска", "en": "Breakfast", "p": "ЦМОР-ге", "pe": "TSMOR-geh", "x": "Was isch zum Zmorge?", "cat": 1, "em": "🥐", "mb": "Ц+морге(сутрин)", "me": "Z+morning"}, {"c": "Zmittag", "d": "Mittagessen", "bg": "Обяд", "en": "Lunch", "p": "ЦМИТ-аг", "pe": "TSMIT-ahg", "x": "Mir gönd go Zmittag ässe.", "cat": 1, "em": "🍝", "mb": "Ц+митаг(обед)", "me": "Z+midday"}, {"c": "Znacht", "d": "Abendessen", "bg": "Вечеря", "en": "Dinner", "p": "ЦНАХТ", "pe": "TSNAKHT", "x": "Was git's zum Znacht?", "cat": 1, "em": "🍲", "mb": "Ц+нахт(нощ)", "me": "Z+night"}, {"c": "Znüni", "d": "Vormittagspause", "bg": "Закуска 10ч", "en": "Morning snack", "p": "ЦНЮНИ", "pe": "TSNEW-nee", "x": "Ich ässe mis Znüni.", "cat": 1, "em": "🍎", "mb": "Ц+нюни(9ч)", "me": "Z+nine"}, {"c": "Zvieri", "d": "Nachmittagssnack", "bg": "Закуска 16ч", "en": "Afternoon snack", "p": "ЦВИЕ-ри", "pe": "TSVEE-ree", "x": "Zum Zvieri git's Guetzli.", "cat": 1, "em": "🍪", "mb": "Ц+виери(4ч)", "me": "Z+four"}, {"c": "Rüebli", "d": "Karotte", "bg": "Морков", "en": "Carrot", "p": "РЮЕ-бли", "pe": "REW-eb-lee", "x": "Rüeblitorte isch typisch.", "cat": 1, "em": "🥕", "mb": "Рюебли = морков", "me": "Famous carrot cake"}, {"c": "Härdöpfel", "d": "Kartoffel", "bg": "Картоф", "en": "Potato", "p": "ХЕР-дьопфел", "pe": "HAIR-derp-fel", "x": "Härdöpfel mit Chäs.", "cat": 1, "em": "🥔", "mb": "Твърда ябълка", "me": "Hard+apple"}, {"c": "Chäs", "d": "Käse", "bg": "Сирене", "en": "Cheese", "p": "ХЕС", "pe": "KHESS", "x": "Schwiizer Chäs!", "cat": 1, "em": "🧀", "mb": "Хес = сирене", "me": "Like hess"}, {"c": "Schoggi", "d": "Schokolade", "bg": "Шоколад", "en": "Chocolate", "p": "ШО-ги", "pe": "SHOG-gee", "x": "Schwiizer Schoggi!", "cat": 1, "em": "🍫", "mb": "Шоги = сладко", "me": "Cute chocolate"}, {"c": "Guetzli", "d": "Keks", "bg": "Бисквитка", "en": "Cookie", "p": "ГУЕЦ-ли", "pe": "GOOTS-lee", "x": "Wotsch es Guetzli?", "cat": 1, "em": "🍪", "mb": "Гует+ли", "me": "Good+little"}, {"c": "Kafi", "d": "Kaffee", "bg": "Кафе", "en": "Coffee", "p": "КА-фи", "pe": "KAH-fee", "x": "En Kafi, bitte.", "cat": 1, "em": "☕", "mb": "Кафи = кафе", "me": "Coffee"}, {"c": "Milch", "d": "Milch", "bg": "Мляко", "en": "Milk", "p": "МИЛХ", "pe": "MILKH", "x": "Heissi Milch mit Honig.", "cat": 1, "em": "🥛", "mb": "Милх = мляко", "me": "Milk"}, {"c": "Brot", "d": "Brot", "bg": "Хляб", "en": "Bread", "p": "БРОТ", "pe": "BROT", "x": "Frischs Brot vom Beck.", "cat": 1, "em": "🍞", "mb": "Брот = хляб", "me": "Bread"}, {"c": "Wasser", "d": "Wasser", "bg": "Вода", "en": "Water", "p": "ВА-сер", "pe": "VAH-ser", "x": "Es Glas Wasser, bitte.", "cat": 1, "em": "💧", "mb": "Васер = вода", "me": "Water"}, {"c": "Bier", "d": "Bier", "bg": "Бира", "en": "Beer", "p": "БИР", "pe": "BEER", "x": "Es Bier, bitte.", "cat": 1, "em": "🍺", "mb": "Бир = бира", "me": "Beer"}, {"c": "Wii", "d": "Wein", "bg": "Вино", "en": "Wine", "p": "ВИЙ", "pe": "VEE", "x": "En Glas Wii, bitte.", "cat": 1, "em": "🍷", "mb": "Вий = вино", "me": "Wine"}, {"c": "Gipfeli", "d": "Croissant", "bg": "Кроасан", "en": "Croissant", "p": "ГИП-фе-ли", "pe": "GIP-feh-lee", "x": "Es Gipfeli zum Zmorge.", "cat": 1, "em": "🥐", "mb": "Гипфели = кроасан", "me": "Swiss croissant"}, {"c": "Öpfel", "d": "Apfel", "bg": "Ябълка", "en": "Apple", "p": "ЙОП-фел", "pe": "ERP-fel", "x": "En rote Öpfel.", "cat": 1, "em": "🍎", "mb": "Йопфел = ябълка", "me": "Apple with Ö"}, {"c": "Fleisch", "d": "Fleisch", "bg": "Месо", "en": "Meat", "p": "ФЛАЙШ", "pe": "FLYSH", "x": "Ich ässe keis Fleisch.", "cat": 1, "em": "🥩", "mb": "Флайш = месо", "me": "Meat"}, {"c": "Gmües", "d": "Gemüse", "bg": "Зеленчуци", "en": "Vegetables", "p": "ГМЮЕС", "pe": "GMEWS", "x": "Frischs Gmües vom Märt.", "cat": 1, "em": "🥬", "mb": "Гмюес = зеленчуци", "me": "Vegetables"}, {"c": "Natel", "d": "Handy", "bg": "Мобилен", "en": "Phone", "p": "на-ТЕЛ", "pe": "nah-TELL", "x": "Gib mer dis Natel.", "cat": 2, "em": "📱", "mb": "Национален телефон", "me": "National telephone"}, {"c": "Velo", "d": "Fahrrad", "bg": "Велосипед", "en": "Bicycle", "p": "ВЕ-ло", "pe": "VEH-lo", "x": "Ich fahre mit em Velo.", "cat": 2, "em": "🚲", "mb": "Вело = колело", "me": "French vélo"}, {"c": "Sack", "d": "Tüte", "bg": "Торбичка", "en": "Bag", "p": "ЗАК", "pe": "ZAHK", "x": "Häsch en Sack?", "cat": 2, "em": "🛍️", "mb": "Зак = торба", "me": "Sack/bag"}, {"c": "Stuhl", "d": "Stuhl", "bg": "Стол", "en": "Chair", "p": "ЩТУЛ", "pe": "SHTOOL", "x": "Sitz uf de Stuhl.", "cat": 2, "em": "🪑", "mb": "Щтул = стол", "me": "Chair"}, {"c": "Tisch", "d": "Tisch", "bg": "Маса", "en": "Table", "p": "ТИШ", "pe": "TISH", "x": "Uf em Tisch.", "cat": 2, "em": "🪵", "mb": "Тиш = маса", "me": "Table"}, {"c": "Schlüssel", "d": "Schlüssel", "bg": "Ключ", "en": "Key", "p": "ШЛЮ-сел", "pe": "SHLEW-sel", "x": "Wo sind mini Schlüssel?", "cat": 2, "em": "🔑", "mb": "Шлюсел = ключ", "me": "Key"}, {"c": "Gäld", "d": "Geld", "bg": "Пари", "en": "Money", "p": "ГЕЛД", "pe": "GELD", "x": "Ich ha keis Gäld.", "cat": 2, "em": "💵", "mb": "Гелд = пари", "me": "Money"}, {"c": "Uhr", "d": "Uhr", "bg": "Часовник", "en": "Watch", "p": "УР", "pe": "OOR", "x": "Was isch uf de Uhr?", "cat": 2, "em": "⌚", "mb": "Ур = час", "me": "Clock"}, {"c": "Buech", "d": "Buch", "bg": "Книга", "en": "Book", "p": "БУЕХ", "pe": "BOO-ekh", "x": "Es guets Buech.", "cat": 2, "em": "📖", "mb": "Буех = книга", "me": "Book"}, {"c": "Charte", "d": "Karte", "bg": "Карта", "en": "Card/Map", "p": "ХАР-те", "pe": "KHAR-teh", "x": "Häsch e Charte?", "cat": 2, "em": "🗺️", "mb": "Харте = карта", "me": "Card/map"}, {"c": "Täsche", "d": "Tasche", "bg": "Чанта", "en": "Bag", "p": "ТЕ-ше", "pe": "TEH-sheh", "x": "Mini Täsche isch schwär.", "cat": 2, "em": "👜", "mb": "Теше = чанта", "me": "Bag/purse"}, {"c": "Jacke", "d": "Jacke", "bg": "Яке", "en": "Jacket", "p": "ЯК-е", "pe": "YAK-eh", "x": "Nimm d'Jacke mit.", "cat": 2, "em": "🧥", "mb": "Яке = яке", "me": "Jacket"}, {"c": "Schueh", "d": "Schuhe", "bg": "Обувки", "en": "Shoes", "p": "ШУЕ", "pe": "SHOO-eh", "x": "Neui Schueh.", "cat": 2, "em": "👟", "mb": "Шуе = обувки", "me": "Shoes"}, {"c": "Brülle", "d": "Brille", "bg": "Очила", "en": "Glasses", "p": "БРЮ-ле", "pe": "BREW-leh", "x": "Wo isch mini Brülle?", "cat": 2, "em": "👓", "mb": "Брюле = очила", "me": "Glasses"}, {"c": "Wie gaht's?", "d": "Wie geht's?", "bg": "Как си?", "en": "How are you?", "p": "ВИЕ ГАТС", "pe": "vee GAHTS", "x": "Hoi, wie gaht's dir?", "cat": 3, "em": "💬", "mb": "Вие гатс", "me": "How goes it?"}, {"c": "Guet, merci", "d": "Gut, danke", "bg": "Добре, мерси", "en": "Good, thanks", "p": "ГУЕТ мер-СИ", "pe": "goot mair-SEE", "x": "Guet, merci, und dir?", "cat": 3, "em": "👍", "mb": "Гует + мерси", "me": "Good + merci"}, {"c": "Ich verstah nöd", "d": "Ich verstehe nicht", "bg": "Не разбирам", "en": "I don't understand", "p": "ИХ фер-ШТА НЬОД", "pe": "ikh fer-SHTAH NERD", "x": "Exgüsi, ich verstah nöd.", "cat": 3, "em": "🤷", "mb": "Ньод = не", "me": "Nöd = not"}, {"c": "Was isch das?", "d": "Was ist das?", "bg": "Какво е това?", "en": "What is this?", "p": "ВАС ИШ ДАС", "pe": "vahs ISH dahs", "x": "Was isch das?", "cat": 3, "em": "❓", "mb": "Иш = ист", "me": "Isch = ist"}, {"c": "Wo isch...?", "d": "Wo ist...?", "bg": "Къде е...?", "en": "Where is...?", "p": "ВО ИШ", "pe": "vo ISH", "x": "Wo isch de Bahnhof?", "cat": 3, "em": "📍", "mb": "Во иш = къде е", "me": "Where is"}, {"c": "Ich hätti gern...", "d": "Ich hätte gerne...", "bg": "Бих искал...", "en": "I would like...", "p": "ИХ ХЕ-ти ГЕРН", "pe": "ikh HET-tee GAIRN", "x": "Ich hätti gern es Bier.", "cat": 3, "em": "🙂", "mb": "Хети герн", "me": "Polite request"}, {"c": "Das isch lässig", "d": "Das ist cool", "bg": "Това е яко", "en": "That's cool", "p": "ДАС ИШ ЛЕ-сиг", "pe": "dahs ish LESS-ig", "x": "Voll lässig!", "cat": 3, "em": "😎", "mb": "Лесиг = яко", "me": "Lässig = cool"}, {"c": "Kei Sorg", "d": "Keine Sorge", "bg": "Няма проблем", "en": "No worries", "p": "КАЙ ЗОРГ", "pe": "kai ZORG", "x": "Kei Sorg!", "cat": 3, "em": "🤙", "mb": "Кай = няма, зорг = грижа", "me": "No worry"}, {"c": "Häsch en Stutz?", "d": "Hast du einen Franken?", "bg": "Имаш ли франк?", "en": "Got a franc?", "p": "ХЕШ ен ЩУЦ", "pe": "hesh en SHTOOTS", "x": "Häsch en Stutz für mi?", "cat": 3, "em": "🪙", "mb": "Щуц = жаргон CHF", "me": "Slang for franc"}, {"c": "Es gaht so", "d": "Es geht so", "bg": "Горе-долу", "en": "So-so", "p": "ес ГАТ СО", "pe": "es GAHT so", "x": "Wie gaht's? Es gaht so.", "cat": 3, "em": "😐", "mb": "Ес гат со", "me": "It goes so-so"}, {"c": "Genau", "d": "Genau", "bg": "Точно така", "en": "Exactly", "p": "ге-НАУ", "pe": "geh-NOW", "x": "Genau, das stimmt!", "cat": 3, "em": "✅", "mb": "Генау = точно", "me": "Exactly"}, {"c": "Sicher", "d": "Sicher", "bg": "Разбира се", "en": "Sure", "p": "ЗИ-хер", "pe": "ZEE-kher", "x": "Sicher, kei Problem!", "cat": 3, "em": "💯", "mb": "Зихер = сигурно", "me": "Sure thing"}, {"c": "Isch guet", "d": "Ist gut", "bg": "Добре / ОК", "en": "OK", "p": "ИШ ГУЕТ", "pe": "ish GOOT", "x": "Isch guet, mached mir.", "cat": 3, "em": "👌", "mb": "Иш гует = ОК", "me": "It's good"}, {"c": "Ich weiss nöd", "d": "Ich weiß nicht", "bg": "Не знам", "en": "I don't know", "p": "ИХ ВАЙС НЬОД", "pe": "ikh VICE NERD", "x": "Ich weiss nöd, sorry.", "cat": 3, "em": "🤔", "mb": "Вайс ньод = не зная", "me": "Don't know"}, {"c": "Gopfridstutz!", "d": "Verdammt!", "bg": "По дяволите!", "en": "Darn it!", "p": "ГОП-фрид-щуц", "pe": "GOP-freed-shtoots", "x": "Gopfridstutz, das isch cheib!", "cat": 3, "em": "😤", "mb": "Леко ругатня", "me": "Mild Swiss swear"}, {"c": "Cheib guet", "d": "Extrem gut", "bg": "Адски добро", "en": "Really good", "p": "ХАЙБ ГУЕТ", "pe": "KHIBE GOOT", "x": "Das isch cheib guet!", "cat": 3, "em": "🔥", "mb": "Хайб = страшно", "me": "Intensifier"}, {"c": "Billet", "d": "Fahrkarte", "bg": "Билет", "en": "Ticket", "p": "би-ЙЕ", "pe": "bee-YEH", "x": "Es Billet nach Züri.", "cat": 4, "em": "🎫", "mb": "Бие = билет (фр.)", "me": "French billet"}, {"c": "Gleis", "d": "Gleis", "bg": "Коловоз", "en": "Platform", "p": "ГЛАЙС", "pe": "GLYSE", "x": "Ab Gleis 3.", "cat": 4, "em": "🚂", "mb": "Глайс = перон", "me": "Track"}, {"c": "Züri", "d": "Zürich", "bg": "Цюрих", "en": "Zurich", "p": "ЦЮ-ри", "pe": "TSEW-ree", "x": "Ich wohn z'Züri.", "cat": 4, "em": "🏙️", "mb": "Цюри = съкратено", "me": "Short Zurich"}, {"c": "Bärn", "d": "Bern", "bg": "Берн", "en": "Bern", "p": "БЕРН", "pe": "BAIRN", "x": "Bärn isch d'Hauptstadt.", "cat": 4, "em": "🐻", "mb": "Мечка Bär + n", "me": "Bear city!"}, {"c": "Tram", "d": "Straßenbahn", "bg": "Трамвай", "en": "Tram", "p": "ТРАМ", "pe": "TRAM", "x": "Mir nähmed s'Tram.", "cat": 4, "em": "🚃", "mb": "Трам", "me": "Tram"}, {"c": "Postauto", "d": "Postbus", "bg": "Пощенски бус", "en": "Post bus", "p": "ПОСТ-ау-то", "pe": "POST-ow-to", "x": "S'Postauto fahrt id Berge.", "cat": 4, "em": "🚌", "mb": "Жълт пощ. автобус", "me": "Yellow bus"}, {"c": "Bahnhof", "d": "Bahnhof", "bg": "Гара", "en": "Station", "p": "БАН-хоф", "pe": "BAHN-hof", "x": "De Bahnhof isch gross.", "cat": 4, "em": "🚉", "mb": "Банхоф = гара", "me": "Station"}, {"c": "GA", "d": "Generalabonnement", "bg": "Безлимитен билет", "en": "Travel pass", "p": "ге-А", "pe": "geh-AH", "x": "Ich ha es GA.", "cat": 4, "em": "🎟️", "mb": "GA = безлимитен", "me": "Unlimited"}, {"c": "Halbtax", "d": "Halbtax-Abo", "bg": "50% намаление", "en": "Half-fare", "p": "ХАЛБ-такс", "pe": "HALP-tahks", "x": "Mit Halbtax isch's billiger.", "cat": 4, "em": "💰", "mb": "Халб = половин", "me": "Half price"}, {"c": "Flughafe", "d": "Flughafen", "bg": "Летище", "en": "Airport", "p": "ФЛУГ-ха-фе", "pe": "FLOOG-hah-feh", "x": "De Flughafe Züri.", "cat": 4, "em": "✈️", "mb": "Флуг+хафе", "me": "Flight+harbour"}, {"c": "Schiff", "d": "Schiff", "bg": "Кораб", "en": "Boat/Ship", "p": "ШИФ", "pe": "SHIF", "x": "S'Schiff uf em See.", "cat": 4, "em": "⛴️", "mb": "Шиф = кораб", "me": "Ship"}, {"c": "Strass", "d": "Straße", "bg": "Улица", "en": "Street", "p": "ЩРАС", "pe": "SHTRAHSS", "x": "D'Bahnhofstrass isch bekannt.", "cat": 4, "em": "🛣️", "mb": "Щрас = улица", "me": "Street"}, {"c": "schaffe", "d": "arbeiten", "bg": "Работя", "en": "To work", "p": "ША-фе", "pe": "SHAH-feh", "x": "Ich schaffe bi de Bank.", "cat": 5, "em": "💼", "mb": "Шафе = работя", "me": "To work hard"}, {"c": "Sitzig", "d": "Sitzung", "bg": "Среща", "en": "Meeting", "p": "ЗИ-циг", "pe": "ZIT-sig", "x": "Mir händ e Sitzig.", "cat": 5, "em": "🤝", "mb": "Зит = седни", "me": "From sitzen"}, {"c": "Chef", "d": "Chef", "bg": "Шеф", "en": "Boss", "p": "ШЕФ", "pe": "SHEF", "x": "De Chef isch nöd da.", "cat": 5, "em": "👔", "mb": "Шеф = шеф", "me": "Boss"}, {"c": "Feierabig", "d": "Feierabend", "bg": "Край на работата", "en": "End of workday", "p": "ФАЙ-ер-А-биг", "pe": "FYE-er-AH-big", "x": "Endlich Feierabig!", "cat": 5, "em": "🎉", "mb": "Файер+абиг", "me": "Party evening"}, {"c": "Pause", "d": "Pause", "bg": "Почивка", "en": "Break", "p": "ПАУ-зе", "pe": "POW-zeh", "x": "Mir mached Pause.", "cat": 5, "em": "☕", "mb": "Паузе = пауза", "me": "Break"}, {"c": "Büro", "d": "Büro", "bg": "Офис", "en": "Office", "p": "бю-РО", "pe": "bew-ROH", "x": "Ich bi im Büro.", "cat": 5, "em": "🏢", "mb": "Бюро = офис", "me": "Bureau"}, {"c": "Lööni", "d": "Lohn", "bg": "Заплата", "en": "Salary", "p": "ЛЬО-ни", "pe": "LERR-nee", "x": "De Lööni chunnt am 25.", "cat": 5, "em": "💰", "mb": "Льони = заплата", "me": "Wage"}, {"c": "Stifti", "d": "Lehrling", "bg": "Стажант", "en": "Apprentice", "p": "ШТИ-фти", "pe": "SHTIF-tee", "x": "De Stifti lernet no.", "cat": 5, "em": "🎓", "mb": "Щифти = стажант", "me": "Trainee"}, {"c": "Kolleg", "d": "Kollege", "bg": "Колега", "en": "Colleague", "p": "ко-ЛЕГ", "pe": "ko-LEG", "x": "Min Kolleg schafft au da.", "cat": 5, "em": "🧑‍💼", "mb": "Колег", "me": "Colleague"}, {"c": "Termin", "d": "Termin", "bg": "Среща / Час", "en": "Appointment", "p": "тер-МИН", "pe": "tair-MEEN", "x": "Ich ha en Termin um drü.", "cat": 5, "em": "📅", "mb": "Термин = запазен час", "me": "Appointment"}, {"c": "E-Mail", "d": "E-Mail", "bg": "Имейл", "en": "Email", "p": "и-МЕЙЛ", "pe": "ee-MAIL", "x": "Ich schicke dir es E-Mail.", "cat": 5, "em": "📧", "mb": "Имейл", "me": "Email"}, {"c": "Wuchenend", "d": "Wochenende", "bg": "Уикенд", "en": "Weekend", "p": "ВУ-хен-енд", "pe": "VOO-khen-end", "x": "Am Wuchenend gaht's.", "cat": 5, "em": "🎊", "mb": "Вухененд = уикенд", "me": "Weekend"}, {"c": "eis", "d": "eins", "bg": "едно", "en": "one", "p": "АЙС", "pe": "ICE", "x": "Eis, zwei, drü...", "cat": 6, "em": "1️⃣", "mb": "Айс", "me": "Like ice"}, {"c": "zwei", "d": "zwei", "bg": "две", "en": "two", "p": "ЦВАЙ", "pe": "TSVAI", "x": "Zwei Kafi.", "cat": 6, "em": "2️⃣", "mb": "Цвай", "me": "Two"}, {"c": "drü", "d": "drei", "bg": "три", "en": "three", "p": "ДРЮ", "pe": "DREW", "x": "Drü Bier.", "cat": 6, "em": "3️⃣", "mb": "Дрю", "me": "Three"}, {"c": "vier", "d": "vier", "bg": "четири", "en": "four", "p": "ФИР", "pe": "FEER", "x": "Um vieri.", "cat": 6, "em": "4️⃣", "mb": "Фир", "me": "Four"}, {"c": "föif", "d": "fünf", "bg": "пет", "en": "five", "p": "ФЬОЙФ", "pe": "FOYF", "x": "Föif Franke.", "cat": 6, "em": "5️⃣", "mb": "Фьойф", "me": "Five"}, {"c": "sächs", "d": "sechs", "bg": "шест", "en": "six", "p": "ЗЕХС", "pe": "ZEKHS", "x": "Sächs Stund.", "cat": 6, "em": "6️⃣", "mb": "Зехс", "me": "Six"}, {"c": "sibne", "d": "sieben", "bg": "седем", "en": "seven", "p": "ЗИБ-не", "pe": "ZIB-neh", "x": "Sibne Täg.", "cat": 6, "em": "7️⃣", "mb": "Зибне", "me": "Seven"}, {"c": "acht", "d": "acht", "bg": "осем", "en": "eight", "p": "АХТ", "pe": "AKHT", "x": "Acht Franke.", "cat": 6, "em": "8️⃣", "mb": "Ахт", "me": "Eight"}, {"c": "nüni", "d": "neun", "bg": "девет", "en": "nine", "p": "НЮ-ни", "pe": "NEW-nee", "x": "Um nüni.", "cat": 6, "em": "9️⃣", "mb": "Нюни", "me": "Nine"}, {"c": "zää", "d": "zehn", "bg": "десет", "en": "ten", "p": "ЦЕЕ", "pe": "TSAIR", "x": "Zää Franke.", "cat": 6, "em": "🔟", "mb": "Цее", "me": "Ten"}, {"c": "hüt", "d": "heute", "bg": "днес", "en": "today", "p": "ХЮТ", "pe": "HEWT", "x": "Hüt isch schöön.", "cat": 6, "em": "📅", "mb": "Хют = днес", "me": "Today"}, {"c": "morn", "d": "morgen", "bg": "утре", "en": "tomorrow", "p": "МОРН", "pe": "MORN", "x": "Morn gaht's besser.", "cat": 6, "em": "📆", "mb": "Морн = утре", "me": "Tomorrow"}, {"c": "geschter", "d": "gestern", "bg": "вчера", "en": "yesterday", "p": "ГЕШ-тер", "pe": "GESH-ter", "x": "Geschter isch schöön gsi.", "cat": 6, "em": "⏪", "mb": "Гещер = вчера", "me": "Yesterday"}, {"c": "Stund", "d": "Stunde", "bg": "Час", "en": "Hour", "p": "ЩТУНД", "pe": "SHTOOND", "x": "In ere Stund.", "cat": 6, "em": "🕐", "mb": "Щтунд = час", "me": "Hour"}, {"c": "Minute", "d": "Minute", "bg": "Минута", "en": "Minute", "p": "ми-НУ-те", "pe": "mee-NOO-teh", "x": "Föif Minute.", "cat": 6, "em": "⏱️", "mb": "Минуте", "me": "Minute"}, {"c": "Wuche", "d": "Woche", "bg": "Седмица", "en": "Week", "p": "ВУ-хе", "pe": "VOO-kheh", "x": "Nächsti Wuche.", "cat": 6, "em": "📊", "mb": "Вухе = седмица", "me": "Week"}, {"c": "Bärg", "d": "Berg", "bg": "Планина", "en": "Mountain", "p": "БЕРГ", "pe": "BAIRG", "x": "Mir gönd uf de Bärg.", "cat": 7, "em": "⛰️", "mb": "Берг с ä", "me": "Mountain"}, {"c": "See", "d": "See", "bg": "Езеро", "en": "Lake", "p": "ЗЕЕ", "pe": "ZAY", "x": "De Zürisee.", "cat": 7, "em": "🏞️", "mb": "Зее = езеро", "me": "Lake"}, {"c": "Schnee", "d": "Schnee", "bg": "Сняг", "en": "Snow", "p": "ШНЕЕ", "pe": "SHNAY", "x": "Es hät Schnee gää.", "cat": 7, "em": "❄️", "mb": "Шнее = сняг", "me": "Snow"}, {"c": "Sunne", "d": "Sonne", "bg": "Слънце", "en": "Sun", "p": "ЗУ-не", "pe": "ZOO-neh", "x": "D'Sunne schiint.", "cat": 7, "em": "☀️", "mb": "Зуне = слънце", "me": "Sun"}, {"c": "Rege", "d": "Regen", "bg": "Дъжд", "en": "Rain", "p": "РЕ-ге", "pe": "REH-geh", "x": "Es rägnet.", "cat": 7, "em": "🌧️", "mb": "Реге = дъжд", "me": "Rain"}, {"c": "Wald", "d": "Wald", "bg": "Гора", "en": "Forest", "p": "ВАЛД", "pe": "VAHLD", "x": "Mir gönd in Wald.", "cat": 7, "em": "🌲", "mb": "Валд = гора", "me": "Forest"}, {"c": "Fluss", "d": "Fluss", "bg": "Река", "en": "River", "p": "ФЛУС", "pe": "FLOOS", "x": "De Fluss isch kalt.", "cat": 7, "em": "🌊", "mb": "Флус = река", "me": "River"}, {"c": "Blueme", "d": "Blume", "bg": "Цвете", "en": "Flower", "p": "БЛУЕ-ме", "pe": "BLOO-meh", "x": "Schöni Blueme!", "cat": 7, "em": "🌸", "mb": "Блуеме", "me": "Flower"}, {"c": "Chue", "d": "Kuh", "bg": "Крава", "en": "Cow", "p": "ХУЕ", "pe": "KHOO-eh", "x": "D'Chue uf de Alp.", "cat": 7, "em": "🐄", "mb": "Хуе = крава", "me": "Cow"}, {"c": "Wanderig", "d": "Wanderung", "bg": "Поход", "en": "Hike", "p": "ВАН-де-риг", "pe": "VAN-deh-rig", "x": "E schöni Wanderig.", "cat": 7, "em": "🥾", "mb": "-иг вместо -унг", "me": "-ig not -ung"}, {"c": "Tier", "d": "Tier", "bg": "Животно", "en": "Animal", "p": "ТИР", "pe": "TEER", "x": "Es wildes Tier.", "cat": 7, "em": "🦊", "mb": "Тир = животно", "me": "Animal"}, {"c": "Luft", "d": "Luft", "bg": "Въздух", "en": "Air", "p": "ЛУФТ", "pe": "LOOFT", "x": "Frischi Luft.", "cat": 7, "em": "💨", "mb": "Луфт = въздух", "me": "Air"}, {"c": "Himmel", "d": "Himmel", "bg": "Небе", "en": "Sky", "p": "ХИ-мел", "pe": "HIM-mel", "x": "De Himmel isch blau.", "cat": 7, "em": "🌤️", "mb": "Химел = небе", "me": "Sky/heaven"}, {"c": "Schtärn", "d": "Stern", "bg": "Звезда", "en": "Star", "p": "ЩЕРН", "pe": "SHTERN", "x": "D'Schtärne am Himmel.", "cat": 7, "em": "⭐", "mb": "Щерн = звезда", "me": "Star"}, {"c": "Frau", "d": "Frau", "bg": "Жена", "en": "Woman/Wife", "p": "ФРАУ", "pe": "FROW", "x": "Mini Frau heisst Anna.", "cat": 8, "em": "👩", "mb": "Фрау = жена", "me": "Woman"}, {"c": "Maa", "d": "Mann", "bg": "Мъж", "en": "Man/Husband", "p": "МАА", "pe": "MAH", "x": "De Maa schafft.", "cat": 8, "em": "👨", "mb": "Маа = мъж", "me": "Man"}, {"c": "Chind", "d": "Kind", "bg": "Дете", "en": "Child", "p": "ХИНД", "pe": "KHIND", "x": "S'Chind spiilt.", "cat": 8, "em": "👶", "mb": "Хинд = дете", "me": "Child (ch!)"}, {"c": "Bueb", "d": "Junge", "bg": "Момче", "en": "Boy", "p": "БУЕБ", "pe": "BOO-eb", "x": "De Bueb isch gross.", "cat": 8, "em": "👦", "mb": "Буеб = момче", "me": "Boy"}, {"c": "Meitli", "d": "Mädchen", "bg": "Момиче", "en": "Girl", "p": "МАЙТ-ли", "pe": "MITE-lee", "x": "S'Meitli lacht.", "cat": 8, "em": "👧", "mb": "Майтли = момиче", "me": "Girl"}, {"c": "Fründ", "d": "Freund", "bg": "Приятел", "en": "Friend", "p": "ФРЮНД", "pe": "FREWND", "x": "Min bescht Fründ.", "cat": 8, "em": "🤝", "mb": "Фрюнд = приятел", "me": "Friend"}, {"c": "Mueter", "d": "Mutter", "bg": "Майка", "en": "Mother", "p": "МУЕ-тер", "pe": "MOO-ter", "x": "Mini Mueter.", "cat": 8, "em": "👩‍👧", "mb": "Муетер = майка", "me": "Mother"}, {"c": "Vater", "d": "Vater", "bg": "Баща", "en": "Father", "p": "ФА-тер", "pe": "FAH-ter", "x": "Min Vater.", "cat": 8, "em": "👨‍👦", "mb": "Фатер = баща", "me": "Father"}, {"c": "Grossmueter", "d": "Großmutter", "bg": "Баба", "en": "Grandmother", "p": "ГРОС-муе-тер", "pe": "GROSS-moo-ter", "x": "Mini Grossmueter.", "cat": 8, "em": "👵", "mb": "Грос+муетер", "me": "Grand+mother"}, {"c": "Grossvater", "d": "Großvater", "bg": "Дядо", "en": "Grandfather", "p": "ГРОС-фа-тер", "pe": "GROSS-fah-ter", "x": "Min Grossvater.", "cat": 8, "em": "👴", "mb": "Грос+фатер", "me": "Grand+father"}];
 const CATS=[{"bg": "Поздрави", "en": "Greetings", "ic": "👋", "clr": "#FF6B6B"}, {"bg": "Храна & Напитки", "en": "Food & Drinks", "ic": "🍽️", "clr": "#FF8A65"}, {"bg": "Ежедневни Неща", "en": "Everyday Items", "ic": "🏠", "clr": "#4ECDC4"}, {"bg": "Изрази", "en": "Expressions", "ic": "💬", "clr": "#FFD93D"}, {"bg": "Пътуване", "en": "Travel", "ic": "🚂", "clr": "#6BCB77"}, {"bg": "Работа", "en": "Work", "ic": "💼", "clr": "#DDA0DD"}, {"bg": "Числа & Време", "en": "Numbers & Time", "ic": "🔢", "clr": "#87CEEB"}, {"bg": "Природа", "en": "Nature", "ic": "⛰️", "clr": "#98D8C8"}, {"bg": "Хора & Семейство", "en": "People & Family", "ic": "👨‍👩‍👧‍👦", "clr": "#F48FB1"}];
 const DLGS=[{"bg": "В Кафенето", "en": "At the Café", "ic": "☕", "lines": [{"s": "A", "c": "Grüezi, ich hätti gern en Kafi.", "bg": "Здравейте, бих искал кафе.", "en": "Hello, I'd like a coffee."}, {"s": "B", "c": "En grossi oder en chliini?", "bg": "Голямо или малко?", "en": "Large or small?"}, {"s": "A", "c": "En grossi, bitte. Und es Gipfeli.", "bg": "Голямо, моля. И кроасан.", "en": "Large please. And a croissant."}, {"s": "B", "c": "Das macht vier Stutz.", "bg": "4 франка.", "en": "That's four francs."}, {"s": "A", "c": "Merci vilmal!", "bg": "Благодаря!", "en": "Thank you!"}]}, {"bg": "На Гарата", "en": "At the Station", "ic": "🚂", "lines": [{"s": "A", "c": "Exgüsi, vo fahrt de Zug nach Bärn?", "bg": "Откъде тръгва влакът за Берн?", "en": "Where does the Bern train leave?"}, {"s": "B", "c": "Ab Gleis 8, in zää Minute.", "bg": "От коловоз 8, след 10 мин.", "en": "Platform 8, in 10 min."}, {"s": "A", "c": "Bruuch ich es Billet?", "bg": "Трябва ли ми билет?", "en": "Do I need a ticket?"}, {"s": "B", "c": "Ja, am Automat oder mit de App.", "bg": "Да, от автомата или с апликацията.", "en": "Yes, machine or app."}, {"s": "A", "c": "Merci!", "bg": "Мерси!", "en": "Thanks!"}]}, {"bg": "С Приятели", "en": "With Friends", "ic": "🍻", "lines": [{"s": "A", "c": "Hoi! Wie gaht's dir?", "bg": "Здрасти! Как си?", "en": "Hi! How are you?"}, {"s": "B", "c": "Guet, merci! Häsch Luscht go öppis trinke?", "bg": "Добре! Искаш ли да пием?", "en": "Good! Grab a drink?"}, {"s": "A", "c": "Ja voll! Wo gönd mir ane?", "bg": "Да! Къде отиваме?", "en": "Yes! Where to?"}, {"s": "B", "c": "Mir chönd is Niederdorf gaa.", "bg": "Можем в Нидердорф.", "en": "We could go to Niederdorf."}, {"s": "A", "c": "Lässig! Bis gli!", "bg": "Яко! До скоро!", "en": "Cool! See you!"}]}, {"bg": "В Магазина", "en": "At the Shop", "ic": "🛒", "lines": [{"s": "A", "c": "Grüezi! Händ Sie Schwiizer Schoggi?", "bg": "Имате ли швейцарски шоколад?", "en": "Do you have Swiss chocolate?"}, {"s": "B", "c": "Ja, döt hinde bim Regal.", "bg": "Да, отзад при рафта.", "en": "Yes, back by the shelf."}, {"s": "A", "c": "Was kostet die grossi Tafle?", "bg": "Колко струва голямата?", "en": "How much is the big bar?"}, {"s": "B", "c": "Vier Franke füfzg.", "bg": "4.50 CHF.", "en": "Four fifty."}, {"s": "A", "c": "Ich nimm zwei, bitte.", "bg": "Ще взема две, моля.", "en": "I'll take two please."}]}, {"bg": "В Офиса", "en": "At the Office", "ic": "💼", "lines": [{"s": "A", "c": "Guete Morge! Händ mir hüt e Sitzig?", "bg": "Добро утро! Имаме ли среща?", "en": "Morning! Meeting today?"}, {"s": "B", "c": "Ja, um zäni im Sitzigszimmer.", "bg": "Да, в 10 в заседателната.", "en": "Yes, at 10."}, {"s": "A", "c": "Wotsch vorher no en Kafi?", "bg": "Искаш ли кафе?", "en": "Coffee first?"}, {"s": "B", "c": "Jo gern! Ich bruuch dringend en Kafi.", "bg": "Да! Спешно ми трябва.", "en": "Yes! Urgently need one."}]}, {"bg": "При Лекаря", "en": "At the Doctor", "ic": "🏥", "lines": [{"s": "A", "c": "Grüezi, ich ha en Termin.", "bg": "Здравейте, имам запазен час.", "en": "Hello, I have an appointment."}, {"s": "B", "c": "Wie heissed Sie?", "bg": "Как се казвате?", "en": "What's your name?"}, {"s": "A", "c": "Ich bi de Müller.", "bg": "Аз съм Мюлер.", "en": "I'm Müller."}, {"s": "B", "c": "Bitte, nämed Sie Platz.", "bg": "Моля, седнете.", "en": "Please, take a seat."}, {"s": "A", "c": "Merci vilmal.", "bg": "Благодаря.", "en": "Thank you."}]}];
 const T={"bg": {"sub": "Учи Швейцарски Немски", "tabs": ["Уроци", "Карти", "Тест", "Писане", "Бързи", "Техники", "Диалози", "Граматика"], "wordOfDay": "Дума на деня", "listen": "Чуй", "listenAll": "Чуй всичко", "back": "← Назад", "words": "думи", "flip": "Натисни за обръщане", "dontKnow": "Не знам", "hard": "Трудно", "know": "Знам!", "all": "Всички", "start": "Започни", "next": "Следващо", "check": "Провери", "show": "Покажи", "correct": "Правилно! 🎉", "wrong": "Грешка", "correctIs": "Правилното е", "score": "Резултат", "newQuiz": "Нов тест", "writeHint": "Напиши на швейцарски немски", "speedTitle": "Бърз Рунд ⚡", "speedDesc": "60 секунди — колко думи познаваш?", "speedEnd": "думи за 60с", "points": "точки", "whatMeans": "Какво означава", "q": "Въпрос", "lessonsDesc": "120+ думи и фрази — 9 категории от ежедневието в Швейцария.", "flashDesc": "Обърни картата и оцени знанията си.", "quizDesc": "Избери правилния превод.", "writeDesc": "Напиши думата по памет!", "excellent": "Отлично! 🏆", "great": "Браво! 🌟", "good": "Добро начало! 💪", "tryAgain": "Опитай пак! 🔄", "person": "Лице", "goV": "отивам", "comeV": "идвам", "beV": "съм", "haveV": "имам", "techTitle": "Техники за Запаметяване 🧠", "techDesc": "Научно доказани методи за бързо учене.", "gramTitle": "Граматика", "keyDiff": "Ключови разлики от Hochdeutsch", "noPraet": "Няма Präteritum", "alwaysPerf": "Винаги Perfekt с si/ha", "goInf": "go + инфинитив", "goNote": "go за целенасочено действие", "dimLi": "Умалителни с -li", "dimNote": "-li вместо -chen", "dblVow": "Двойни гласни = дълги", "dblNote": "aa, ee, oo = удължени", "noSz": "Няма ß", "noSzNote": "Винаги ss", "playWord": "Произнеси", "slowPlay": "Бавно", "example": "Пример", "ttsWarn": "⚠️ Приблизително de-CH/de-DE произношение — не е истински швейцарски немски", "noVoice": "Няма швейцарски глас"}, "en": {"sub": "Learn Swiss German", "tabs": ["Lessons", "Cards", "Quiz", "Write", "Speed", "Techniques", "Dialogs", "Grammar"], "wordOfDay": "Word of the Day", "listen": "Listen", "listenAll": "Listen all", "back": "← Back", "words": "words", "flip": "Tap to flip", "dontKnow": "Don't know", "hard": "Hard", "know": "Know it!", "all": "All", "start": "Start", "next": "Next", "check": "Check", "show": "Show", "correct": "Correct! 🎉", "wrong": "Wrong", "correctIs": "Correct answer", "score": "Score", "newQuiz": "New quiz", "writeHint": "Write in Swiss German", "speedTitle": "Speed Round ⚡", "speedDesc": "60 seconds — how many?", "speedEnd": "words in 60s", "points": "pts", "whatMeans": "What does", "q": "Question", "lessonsDesc": "120+ words and phrases — 9 categories from Swiss everyday life.", "flashDesc": "Flip the card and rate your knowledge.", "quizDesc": "Pick the correct translation.", "writeDesc": "Write the word from memory!", "excellent": "Excellent! 🏆", "great": "Great! 🌟", "good": "Good start! 💪", "tryAgain": "Try again! 🔄", "person": "Person", "goV": "to go", "comeV": "to come", "beV": "to be", "haveV": "to have", "techTitle": "Memory Techniques 🧠", "techDesc": "Science-backed methods for faster learning.", "gramTitle": "Grammar", "keyDiff": "Key differences from Hochdeutsch", "noPraet": "No Präteritum", "alwaysPerf": "Always Perfekt with si/ha", "goInf": "go + infinitive", "goNote": "go for purposeful action", "dimLi": "Diminutives with -li", "dimNote": "-li instead of -chen", "dblVow": "Double vowels = long", "dblNote": "aa, ee, oo = elongated", "noSz": "No ß", "noSzNote": "Always ss", "playWord": "Pronounce", "slowPlay": "Slow", "example": "Example", "ttsWarn": "⚠️ Approximate de-CH/de-DE pronunciation — not real Swiss German", "noVoice": "No Swiss voice"}};
 
-const shuf=a=>[...a].sort(()=>Math.random()-.5);
-let audioEl=null;
-function getAudio(){if(!audioEl){audioEl=new Audio();audioEl.src="schwyzerdutsch.mp3";audioEl.preload="auto";}return audioEl;}
-function playWord(wordIndex){
-  const a=getAudio();const t=TS[wordIndex];if(t===undefined)return;
-  const nextT=wordIndex<TS.length-1?TS[wordIndex+1]:t+2;
-  a.currentTime=t;a.play();
-  setTimeout(()=>{a.pause();},Math.max(500,(nextT-t)*1000-50));
+var TS=[0.0, 0.84, 1.28, 1.98, 2.98, 3.98, 4.82, 5.94, 6.54, 7.5, 8.08, 8.9, 10.14, 11.1, 11.6, 12.28, 13.06, 13.7, 14.34, 14.98, 15.72, 16.44, 17.1, 17.74, 18.36, 19.48, 20.02, 20.7, 21.14, 21.58, 22.26, 22.84, 23.46, 24.04, 24.66, 25.28, 25.78, 26.44, 26.92, 27.56, 28.04, 28.56, 29.06, 29.76, 30.38, 31.02, 31.5, 32.04, 32.92, 33.36, 33.98, 35.02, 36.06, 36.88, 37.76, 38.62, 39.36, 40.42, 41.18, 41.74, 42.34, 42.94, 43.8, 44.88, 45.7, 46.24, 46.86, 47.48, 48.04, 48.54, 49.3, 50.14, 50.48, 51.38, 52.22, 52.84, 53.56, 54.2, 54.88, 55.5, 56.42, 57.06, 57.62, 58.14, 58.84, 59.42, 60.0, 60.52, 61.28, 61.86, 62.46, 62.92, 63.5, 64.18, 64.74, 65.36, 65.82, 66.42, 66.98, 67.38, 67.94, 68.62, 69.16, 69.84, 70.48, 71.06, 71.54, 72.14, 72.68, 73.28, 73.88, 74.44, 75.02, 75.44, 76.16, 76.7, 77.24, 77.78, 78.38, 78.88, 79.34, 79.94, 80.36, 80.98, 81.52, 82.14, 82.82, 83.68];
+
+var $=document.getElementById.bind(document);
+var state={lang:"bg",tab:0,xp:0,lv:"A1",lm:"upto",catOpen:null,
+  crdCat:-1,crdDeck:[],crdIdx:0,crdFlip:false,
+  qzOn:false,qzQs:[],qzI:0,qzSc:0,qzAns:null,
+  wrDeck:[],wrIdx:0,wrVal:"",wrFb:null,
+  spOn:false,spTm:60,spSc:0,spQ:null,spTi:null,
+  dlSel:0};
+var CO={A1:1,A2:2,B1:3,B2:4},CL=["A1","A2","B1","B2"];
+function gL(w){var c=w.cat;return c===0||c===6?"A1":c===1||c===2||c===3||c===7||c===8?"A2":"B1";}
+function pool(){var x=CO[state.lv]||1;return V.filter(function(w){return state.lm==="only"?gL(w)===state.lv:(CO[gL(w)]||1)<=x;});}
+function sf(a){return a.slice().sort(function(){return Math.random()-.5;});}
+function iL(a){return state.lm==="only"?a===state.lv:(CO[a]||1)<=(CO[state.lv]||1);}
+
+// Audio
+var _a=null,_r=false;
+function au(){if(!_a){_a=new Audio("schwyzerdutsch.mp3");_a.preload="auto";_a.oncanplaythrough=function(){_r=true;};_a.load();}return _a;}
+function pl(i,r){var a=au();if(!_r){a.oncanplaythrough=function(){_r=true;pl(i,r);};return;}var t=TS[i];if(t==null)return;var n=i<TS.length-1?TS[i+1]:t+2;a.pause();a.playbackRate=r||1;a.currentTime=t;a.play();var d=r&&r<1?(n-t)/r:(n-t);setTimeout(function(){a.pause();a.playbackRate=1;},Math.max(400,d*1000-50));}
+function pw(t){for(var i=0;i<V.length;i++)if(V[i].c===t){pl(i,1);return;}}
+function ps(t){for(var i=0;i<V.length;i++)if(V[i].c===t){pl(i,.6);return;}}
+function sbH(txt,lbl,slow){return'<button class="sb" onclick="event.stopPropagation();'+(slow?'ps':'pw')+'(\''+txt.replace(/'/g,"\\'")+'\')">'+(slow?'\u{1F422}':'\u{1F50A}')+(lbl?' '+lbl:'')+'</button>';}
+
+function render(){
+  var t=T[state.lang],p=pool(),s=state;
+  var ic=["\u{1F4D6}","\u{1F0CF}","\u270D\uFE0F","\u2328\uFE0F","\u26A1","\u{1F9E0}","\u{1F4AC}","\u{1F4D0}"];
+  
+  // Header
+  var hdr='<div class="hdr"><div class="hdr-top"><div class="logo"><span style="font-size:1.5rem">\u{1F1E8}\u{1F1ED}</span><div><div class="logo-text">Schwyzerd\u00fctsch</div><div class="logo-sub">'+t.sub+'</div></div></div>';
+  hdr+='<div style="display:flex;gap:6px;align-items:center"><span class="gl" style="font-size:.6rem;padding:3px 10px;border-radius:12px;font-weight:700;border:1px solid rgba(255,215,0,.2);background:rgba(255,215,0,.08)">\u2B50 '+s.xp+'</span>';
+  hdr+='<button class="pk" onclick="state.lang=state.lang===\'bg\'?\'en\':\'bg\';render();" style="background:rgba(255,107,157,.1);border:1px solid rgba(255,107,157,.2);border-radius:12px;padding:4px 10px;font-size:.58rem;font-weight:700;cursor:pointer;font-family:inherit">'+(s.lang==="bg"?"EN":"BG")+'</button></div></div>';
+  
+  // CEFR
+  hdr+='<div class="cR"><span style="font-size:.46rem;color:rgba(255,255,255,.25);font-weight:700">CEFR </span>';
+  CL.forEach(function(c){hdr+='<button class="cb '+(iL(c)?'cA':'cD')+'" onclick="state.lv=\''+c+'\';render();">'+c+'</button>';});
+  hdr+='<span style="width:1px;height:14px;background:rgba(255,255,255,.08);margin:0 3px"></span>';
+  hdr+='<button class="tm '+(s.lm==="upto"?"tA":"")+'" onclick="state.lm=\'upto\';render();">'+(s.lang==="bg"?"\u0414\u043e":"Up to")+'</button>';
+  hdr+='<button class="tm '+(s.lm==="only"?"tA":"")+'" onclick="state.lm=\'only\';render();">'+(s.lang==="bg"?"\u0421\u0430\u043c\u043e":"Only")+'</button></div>';
+  
+  // Nav
+  hdr+='<div class="nav">';
+  for(var i=0;i<8;i++)hdr+='<button class="nb'+(s.tab===i?' on':'')+'" onclick="state.tab='+i+';state.catOpen=null;render();"><span class="ic">'+ic[i]+'</span>'+t.tabs[i]+'</button>';
+  hdr+='</div></div>';
+  
+  // Content
+  var ct='';
+  if(s.tab===0)ct=rLes(t,s.lang,p);
+  else if(s.tab===1)ct=rCrd(t,s.lang,p);
+  else if(s.tab===2)ct=rQz(t,s.lang,p);
+  else if(s.tab===3)ct=rWr(t,s.lang,p);
+  else if(s.tab===4)ct=rSp(t,s.lang,p);
+  else if(s.tab===5)ct=rTe(t,s.lang);
+  else if(s.tab===6)ct=rDl(t,s.lang);
+  else if(s.tab===7)ct=rGr(t,s.lang);
+  
+  $('app').innerHTML=hdr+'<div style="padding:12px 12px 80px">'+ct+'</div>';
 }
-function playWordByText(text){
-  const idx=V.findIndex(w=>w.c===text);
-  if(idx>=0)playWord(idx);
+
+// Lessons
+function rLes(t,l,p){
+  var src=p.length?p:V,s=state;
+  if(s.catOpen!==null){
+    var ws=src.filter(function(w){return w.cat===s.catOpen;}),cl=CATS[s.catOpen]?CATS[s.catOpen].clr:"#ff6b9d";
+    var h='<button class="b2" onclick="state.catOpen=null;render();" style="margin-bottom:10px">'+t.back+'</button>';
+    h+='<h2 style="font-weight:800;font-size:1.25rem;color:#fff;margin-bottom:12px"><span style="font-size:1.4rem;margin-right:8px">'+CATS[s.catOpen].ic+'</span>'+(l==="bg"?CATS[s.catOpen].bg:CATS[s.catOpen].en)+'</h2>';
+    ws.forEach(function(w){
+      h+='<div class="wrd" style="border-left:3px solid '+cl+'"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="flex:1">';
+      h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'+(w.em?'<span style="font-size:1.3rem">'+w.em+'</span>':'')+'<span style="font-weight:800;color:#fff;font-size:1.02rem">'+w.c+'</span></div>';
+      h+='<div class="pk" style="font-size:.7rem;font-weight:700;background:rgba(255,107,157,.1);display:inline-block;padding:2px 10px;border-radius:8px;margin-bottom:4px">'+(l==="bg"?w.p:w.pe)+'</div>';
+      h+='<div style="color:rgba(255,255,255,.38);font-size:.66rem;font-style:italic;margin-bottom:2px">'+w.x+'</div>';
+      h+='<div style="color:rgba(255,255,255,.45);font-size:.68rem">DE: '+w.d+'</div>';
+      h+='<div class="pr" style="font-size:.88rem;font-weight:700;margin-top:4px">'+(l==="bg"?w.bg:w.en)+'</div>';
+      h+='<div style="color:rgba(255,255,255,.28);font-size:.58rem;margin-top:3px">\u{1F4A1} '+(l==="bg"?w.mb:w.me)+'</div>';
+      h+='</div><div style="display:flex;flex-direction:column;gap:4px;margin-left:8px">'+sbH(w.c,t.listen)+sbH(w.c,t.slowPlay,true)+'</div></div></div>';
+    });
+    return h;
+  }
+  var dy=src[Math.floor(Date.now()/864e5)%src.length];
+  var h='<h2 style="font-weight:800;font-size:1.35rem;color:#fff;margin-bottom:4px">\u{1F1E8}\u{1F1ED} '+t.tabs[0]+'</h2>';
+  h+='<p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:14px">'+t.lessonsDesc+'</p>';
+  h+='<div class="G GW" style="text-align:center;padding:22px;background:linear-gradient(135deg,rgba(255,107,157,.06),rgba(192,132,252,.06))">';
+  h+='<div class="pk" style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px">\u{1F3AF} '+t.wordOfDay+'</div>';
+  h+='<div style="font-weight:800;font-size:1.7rem;color:#fff;margin:6px 0">'+(dy.em?'<span style="margin-right:8px">'+dy.em+'</span>':'')+dy.c+'</div>';
+  h+='<div class="pk" style="font-size:.76rem;font-weight:600;background:rgba(255,107,157,.08);display:inline-block;padding:3px 14px;border-radius:12px;margin-bottom:6px">'+(l==="bg"?dy.p:dy.pe)+'</div>';
+  h+='<div class="pr" style="font-size:.85rem;font-weight:600">'+(l==="bg"?dy.bg:dy.en)+'</div>';
+  h+='<div style="display:flex;gap:6px;justify-content:center;margin-top:10px">'+sbH(dy.c,t.listen)+sbH(dy.c,t.slowPlay,true)+'</div></div>';
+  CATS.forEach(function(c,i){
+    var n=src.filter(function(w){return w.cat===i;}).length;
+    if(!n)return;
+    h+='<div class="G" style="cursor:pointer;border-left:3px solid '+c.clr+'" onclick="state.catOpen='+i+';render();">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:1.15rem">'+c.ic+'</span><span style="font-size:.53rem;font-weight:700;padding:2px 10px;border-radius:10px;background:'+c.clr+'15;color:'+c.clr+'">'+n+' '+t.words+'</span></div>';
+    h+='<div style="font-weight:700;font-size:.92rem;color:#fff">'+(l==="bg"?c.bg:c.en)+'</div>';
+    h+='<div style="font-size:.6rem;color:rgba(255,255,255,.28);margin-top:2px">'+src.filter(function(w){return w.cat===i;}).slice(0,5).map(function(w){return w.c;}).join(' \u2022 ')+'</div></div>';
+  });
+  return h;
 }
-function playWordSlow(text){
-  const idx=V.findIndex(w=>w.c===text);if(idx<0)return;
-  const a=getAudio();const t=TS[idx];
-  const nextT=idx<TS.length-1?TS[idx+1]:t+2;
-  a.currentTime=t;a.playbackRate=0.65;a.play();
-  setTimeout(()=>{a.pause();a.playbackRate=1.0;},Math.max(800,(nextT-t)*1000/0.65));
+
+// Flashcards
+function rCrd(t,l,p){
+  var src=p.length?p:V,s=state;
+  if(!s.crdDeck.length){s.crdDeck=sf(src);s.crdIdx=0;s.crdFlip=false;}
+  var w=s.crdDeck[s.crdIdx%s.crdDeck.length];
+  var h='<h2 style="font-weight:800;font-size:1.25rem;color:#fff;margin-bottom:4px">'+t.tabs[1]+'</h2>';
+  h+='<p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:12px">'+t.flashDesc+'</p>';
+  // Category filter
+  h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px">';
+  h+='<button style="background:'+(s.crdCat===-1?'rgba(255,107,157,.1)':'rgba(255,255,255,.03)')+';border:1px solid '+(s.crdCat===-1?'rgba(255,107,157,.25)':'rgba(255,255,255,.06)')+';border-radius:12px;padding:5px 8px;font-size:.5rem;color:'+(s.crdCat===-1?'#ff6b9d':'rgba(255,255,255,.3)')+';cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;min-width:40px;font-weight:700" onclick="state.crdCat=-1;state.crdDeck=sf(pool().length?pool():V);state.crdIdx=0;state.crdFlip=false;render();"><span style="font-size:.85rem">\u{1F310}</span>'+t.all+'</button>';
+  CATS.forEach(function(c,i){var n=src.filter(function(w){return w.cat===i;}).length;if(!n)return;
+    h+='<button style="background:'+(s.crdCat===i?'rgba(255,255,255,.06)':'rgba(255,255,255,.02)')+';border:1px solid '+(s.crdCat===i?c.clr+'40':'rgba(255,255,255,.05)')+';border-radius:12px;padding:5px 5px;font-size:.46rem;color:'+(s.crdCat===i?c.clr:'rgba(255,255,255,.28)')+';cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;min-width:38px;font-weight:700" onclick="state.crdCat='+i+';var s=pool().filter(function(w){return w.cat==='+i+';});state.crdDeck=sf(s.length?s:V);state.crdIdx=0;state.crdFlip=false;render();"><span style="font-size:.8rem">'+c.ic+'</span>'+(l==="bg"?c.bg:c.en)+'</button>';
+  });
+  h+='</div>';
+  // Card
+  h+='<div class="fc" onclick="state.crdFlip=!state.crdFlip;render();"><div class="fi" style="transform:'+(s.crdFlip?'rotateY(180deg)':'none')+'">';
+  h+='<div class="ff f1">'+(w.em?'<div style="font-size:3rem;margin-bottom:8px">'+w.em+'</div>':'')+'<div style="font-weight:800;font-size:1.8rem;color:#fff;margin-bottom:6px">'+w.c+'</div><div class="pk" style="font-weight:700;font-size:.78rem;background:rgba(255,107,157,.08);padding:3px 14px;border-radius:12px;margin-bottom:12px">'+(l==="bg"?w.p:w.pe)+'</div><div style="display:flex;gap:6px">'+sbH(w.c,t.listen)+sbH(w.c,t.slowPlay,true)+'</div><div style="color:rgba(255,255,255,.18);font-size:.56rem;margin-top:14px">'+t.flip+'</div></div>';
+  h+='<div class="ff f2">'+(w.em?'<div style="font-size:2.2rem;margin-bottom:6px">'+w.em+'</div>':'')+'<div class="pr" style="font-size:1.3rem;font-weight:800;margin-bottom:4px">'+(l==="bg"?w.bg:w.en)+'</div><div style="color:rgba(255,255,255,.45);font-size:.76rem">DE: '+w.d+'</div><div style="color:rgba(255,255,255,.32);font-size:.66rem;font-style:italic;margin-bottom:4px">'+w.x+'</div>'+sbH(w.c,t.listen)+'</div>';
+  h+='</div></div>';
+  // Rate buttons
+  h+='<div style="display:flex;justify-content:center;gap:8px;margin-top:18px">';
+  h+='<button onclick="state.crdIdx++;state.crdFlip=false;render();" style="padding:10px 18px;border:1px solid rgba(255,70,70,.25);border-radius:14px;background:rgba(255,70,70,.08);color:#ff5050;font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer">\u274C '+t.dontKnow+'</button>';
+  h+='<button onclick="state.crdIdx++;state.crdFlip=false;render();" style="padding:10px 18px;border:1px solid rgba(255,170,40,.25);border-radius:14px;background:rgba(255,170,40,.08);color:#ffb432;font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer">\u{1F914} '+t.hard+'</button>';
+  h+='<button onclick="state.xp+=5;state.crdIdx++;state.crdFlip=false;render();" style="padding:10px 18px;border:1px solid rgba(100,255,160,.25);border-radius:14px;background:rgba(100,255,160,.08);color:#6dffa8;font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer">\u2705 '+t.know+'</button>';
+  h+='</div><div style="text-align:center;color:rgba(255,255,255,.18);font-size:.68rem;margin-top:8px">'+(s.crdIdx%s.crdDeck.length+1)+'/'+s.crdDeck.length+'</div>';
+  return h;
 }
-const Sb=({text,label,slow})=>(<button onClick={e=>{e.stopPropagation();if(slow)playWordSlow(text);else playWordByText(text);}} style={{background:"#E8F5E9",border:"1px solid #81C784",borderRadius:20,padding:"4px 10px",color:"#2E7D32",fontSize:".68rem",cursor:"pointer",fontFamily:"inherit",display:"inline-flex",alignItems:"center",gap:3,fontWeight:600,boxShadow:"0 1px 3px rgba(0,0,0,.08)"}}>{slow?"🐢":"🔊"}{label?" "+label:""}</button>);
 
-const css=`*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:system-ui,-apple-system,sans-serif}
-.nG{display:grid;grid-template-columns:repeat(4,1fr);max-width:860px;margin:0 auto}
-.nG button{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-family:inherit;font-size:.58rem;padding:7px 2px 5px;cursor:pointer;border-bottom:3px solid transparent;transition:.15s;font-weight:600}
-.nG button.on{color:#D32F2F;border-bottom-color:#D32F2F;background:rgba(211,47,47,.04)}
-.nG .ic{font-size:.95rem;line-height:1}
-.cR{display:flex;align-items:center;gap:4px;padding:4px 10px;justify-content:center;flex-wrap:wrap;background:#FAFAFA;border-bottom:1px solid #eee}
-.cb{border:2px solid #ddd;background:#fff;color:#999;padding:3px 9px;border-radius:20px;cursor:pointer;font-weight:800;font-size:.62rem;transition:.15s}
-.cL{color:#D32F2F;border-color:#EF9A9A;background:#FFEBEE;box-shadow:0 0 0 2px rgba(211,47,47,.1)}
-.cS{box-shadow:0 0 0 3px rgba(211,47,47,.2)!important;border-color:#E57373}
-.cD{opacity:.35}
-.mb{border:2px solid #ddd;background:#fff;color:#888;padding:3px 9px;border-radius:20px;cursor:pointer;font-weight:700;font-size:.58rem;transition:.15s}
-.mL{color:#D32F2F;border-color:#EF9A9A;background:#FFEBEE}
-.gc{background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04);transition:.15s}
-.gc:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
-button:focus{outline:none}
-@media(max-width:420px){.cb{padding:2px 6px;font-size:.55rem}.mb{padding:2px 6px;font-size:.55rem}.nG button{font-size:.5rem;padding:5px 1px}}`;
+// Quiz
+function rQz(t,l,p){
+  var src=p.length?p:V,s=state;
+  if(!s.qzOn)return'<h2 style="font-weight:800;font-size:1.25rem;color:#fff;margin-bottom:4px">'+t.tabs[2]+'</h2><p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:18px">'+t.quizDesc+'</p><div style="text-align:center"><button class="bt" onclick="startQz()">\u{1F680} '+t.start+'</button></div>';
+  if(s.qzI>=s.qzQs.length){var pc=Math.round(s.qzSc/s.qzQs.length*100);return'<div style="text-align:center;padding:30px"><div style="font-size:3.2rem;font-weight:800;color:'+(pc>=60?'#6dffa8':'#ff5050')+'">'+pc+'%</div><p style="color:rgba(255,255,255,.4)">'+(pc>=90?t.excellent:pc>=60?t.great:pc>=40?t.good:t.tryAgain)+'</p><button class="bt" onclick="startQz()" style="margin-top:16px">\u{1F504} '+t.newQuiz+'</button></div>';}
+  var q=s.qzQs[s.qzI],lb=["A","B","C","D"];
+  var h='<div style="color:rgba(255,255,255,.25);font-size:.66rem;margin-bottom:6px;font-weight:600">'+t.q+' '+(s.qzI+1)+'/'+s.qzQs.length+'</div>';
+  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+(q.w.em?'<span style="font-size:1.5rem">'+q.w.em+'</span>':'')+'<span style="font-size:1.05rem;font-weight:700;color:#fff">'+t.whatMeans+' <span class="pk" style="font-weight:800">"'+q.w.c+'"</span>?</span></div>';
+  h+='<div class="pk" style="font-size:.7rem;font-weight:600;margin-bottom:4px">'+(l==="bg"?q.w.p:q.w.pe)+'</div>';
+  h+='<div style="display:flex;gap:5px;margin-bottom:12px">'+sbH(q.w.c,t.listen)+sbH(q.w.c,t.slowPlay,true)+'</div>';
+  q.o.forEach(function(o,i){
+    var cls='opt';if(s.qzAns!==null){if(o.k)cls+=' ok';else if(i===s.qzAns)cls+=' no';}
+    h+='<button class="'+cls+'" onclick="pickQz('+o.k+','+i+')"><span class="olbl">'+lb[i]+'</span>'+o.t+'</button>';
+  });
+  return h;
+}
+function startQz(){var src=pool().length?pool():V;state.qzQs=sf(src).slice(0,12).map(function(w){var wr=sf(src.filter(function(x){return x.bg!==w.bg;})).slice(0,3);return{w:w,o:sf([{t:state.lang==="bg"?w.bg:w.en,k:true}].concat(wr.map(function(x){return{t:state.lang==="bg"?x.bg:x.en,k:false};})))};});state.qzI=0;state.qzSc=0;state.qzAns=null;state.qzOn=true;render();}
+function pickQz(ok,i){if(state.qzAns!==null)return;state.qzAns=i;if(ok){state.qzSc++;state.xp+=10;}render();setTimeout(function(){state.qzAns=null;state.qzI++;render();},900);}
 
-function App(){
-const[lang,setLang]=useState("bg"),[tab,setTab]=useState(0),[xp,setXp]=useState(0),[lv,setLv]=useState("A1"),[lm,setLm]=useState("upto");
+// Write
+function rWr(t,l,p){
+  var src=p.length?p:V,s=state;
+  if(!s.wrDeck.length){s.wrDeck=sf(src);s.wrIdx=0;}
+  var w=s.wrDeck[s.wrIdx%s.wrDeck.length];
+  var h='<h2 style="font-weight:800;font-size:1.25rem;color:#fff;margin-bottom:4px">'+t.tabs[3]+'</h2><p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:14px">'+t.writeDesc+'</p>';
+  h+='<div class="G" style="padding:18px">';
+  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+(w.em?'<span style="font-size:1.5rem">'+w.em+'</span>':'')+'<span style="font-size:1.1rem;font-weight:700;color:#fff">'+(l==="bg"?w.bg:w.en)+'</span></div>';
+  h+='<div style="color:rgba(255,255,255,.3);font-size:.7rem;margin-bottom:12px">'+t.writeHint+' (DE: '+w.d+')</div>';
+  h+='<input id="wrIn" value="'+s.wrVal.replace(/"/g,'&quot;')+'" oninput="state.wrVal=this.value;" onkeydown="if(event.key===\'Enter\')chkWr();" placeholder="..." autocomplete="off" style="width:100%;background:rgba(255,255,255,.05);border:1px solid '+(s.wrFb==="ok"?'rgba(100,255,160,.4)':s.wrFb==="no"?'rgba(255,70,70,.4)':'rgba(255,255,255,.1)')+';border-radius:12px;padding:12px 14px;color:#fff;font-family:monospace;font-size:1.02rem">';
+  if(s.wrFb==="ok")h+='<div class="gn" style="margin-top:8px;padding:8px 12px;border-radius:10px;background:rgba(100,255,160,.08);font-size:.82rem;font-weight:600">'+t.correct+'</div>';
+  if(s.wrFb==="no")h+='<div style="margin-top:8px;padding:8px 12px;border-radius:10px;background:rgba(255,70,70,.08);color:#ff5050;font-size:.82rem;font-weight:600">'+t.correctIs+': <b style="color:#fff">'+w.c+'</b></div>';
+  h+='<div style="display:flex;gap:6px;margin-top:12px;justify-content:center;flex-wrap:wrap">';
+  h+='<button class="b2" onclick="chkWr()">'+t.check+'</button><button class="b2" onclick="state.wrVal=\''+w.c.replace(/'/g,"\\'")+'\';state.wrFb=null;render();">'+t.show+'</button><button class="b2" onclick="state.wrIdx++;state.wrVal=\'\';state.wrFb=null;render();">'+t.next+' \u2192</button>';
+  h+=sbH(w.c,t.listen)+sbH(w.c,t.slowPlay,true)+'</div></div>';
+  h+='<div style="text-align:center;color:rgba(255,255,255,.18);font-size:.66rem;margin-top:8px">'+(s.wrIdx%s.wrDeck.length+1)+'/'+s.wrDeck.length+'</div>';
+  return h;
+}
+function chkWr(){var w=state.wrDeck[state.wrIdx%state.wrDeck.length];if(state.wrVal.trim().toLowerCase()===w.c.toLowerCase()){state.wrFb="ok";state.xp+=15;}else state.wrFb="no";render();var el=document.getElementById('wrIn');if(el)el.focus();}
 
-const pool=pL(lv,lm),t=T[lang];
-const icons=["📖","🃏","✍️","⌨️","⚡","🧠","💬","📐"];
-return(<div style={{background:"#F5F5F5",color:"#333",minHeight:"100vh",fontFamily:"system-ui,sans-serif"}}>
-<style>{css}</style>
-<div style={{position:"sticky",top:0,zIndex:100,background:"#fff",borderBottom:"1px solid #eee",boxShadow:"0 1px 4px rgba(0,0,0,.06)"}}>
-<div style={{maxWidth:860,margin:"0 auto",padding:"6px 12px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-<div style={{display:"flex",alignItems:"center",gap:8}}>
-<div style={{width:26,height:26,background:"#D32F2F",borderRadius:5,position:"relative",flexShrink:0,boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}><div style={{position:"absolute",width:"60%",height:"18%",top:"41%",left:"20%",background:"#fff",borderRadius:1}}/><div style={{position:"absolute",width:"18%",height:"60%",top:"20%",left:"41%",background:"#fff",borderRadius:1}}/></div>
-<div><div style={{fontWeight:800,fontSize:".85rem",color:"#333",lineHeight:1}}>Schwyzerdütsch</div><div style={{fontSize:".48rem",color:"#999",fontWeight:500}}>{t.sub}</div></div>
-</div>
-<div style={{display:"flex",gap:5,alignItems:"center"}}>
-<span style={{fontSize:".62rem",color:"#F57F17",background:"#FFF9C4",padding:"3px 8px",borderRadius:12,fontWeight:700}}>⭐ {xp}</span>
-<button onClick={()=>setLang(lang==="bg"?"en":"bg")} style={{background:"#FFEBEE",border:"1px solid #FFCDD2",borderRadius:12,padding:"3px 9px",color:"#D32F2F",fontSize:".58rem",fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{lang==="bg"?"EN":"BG"}</button>
-</div></div>
-<div className="cR"><span style={{fontSize:".5rem",color:"#aaa",fontWeight:700,marginRight:2}}>CEFR</span>
-{CL.map(l=>{const lit=iL(l,lv,lm);return(<button key={l} onClick={()=>setLv(l)} className={"cb "+(lit?"cL":"cD")+(l===lv?" cS":"")}>{l}</button>);})}
-<span style={{width:1,height:14,background:"#ddd",margin:"0 3px"}}/>
-<button onClick={()=>setLm("upto")} className={"mb "+(lm==="upto"?"mL":"")}>{lang==="bg"?"До":"Up to"}</button>
-<button onClick={()=>setLm("only")} className={"mb "+(lm==="only"?"mL":"")}>{lang==="bg"?"Само":"Only"}</button>
-</div>
-<div className="nG">{t.tabs.map((nm,i)=>(<button key={i} onClick={()=>setTab(i)} className={tab===i?"on":""}><span className="ic">{icons[i]}</span>{nm}</button>))}</div>
-</div>
+// Speed
+function rSp(t,l,p){
+  var s=state;
+  if(!s.spOn&&s.spTm===0)return'<div style="text-align:center;padding:30px"><div class="pk" style="font-size:3.2rem;font-weight:800">'+s.spSc+'</div><p style="color:rgba(255,255,255,.35)">'+t.speedEnd+'</p><button class="bt" onclick="goSp()" style="margin-top:16px">'+t.start+'</button></div>';
+  if(!s.spOn)return'<h2 style="font-weight:800;font-size:1.25rem;color:#fff;margin-bottom:4px">'+t.speedTitle+'</h2><p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:18px">'+t.speedDesc+'</p><div style="text-align:center"><button class="bt" onclick="goSp()">'+t.start+'</button></div>';
+  var q=s.spQ;if(!q)return'';
+  var h='<div style="display:flex;justify-content:space-between;margin-bottom:12px"><span style="font-family:monospace;font-size:1.7rem;font-weight:800;color:'+(s.spTm<=10?'#ff5050':'#ff6b9d')+'">'+s.spTm+'s</span><span class="gl" style="font-weight:700">\u2B50 '+s.spSc+' '+t.points+'</span></div>';
+  h+='<div style="text-align:center;margin:14px 0">'+(q.w.em?'<div style="font-size:2.2rem;margin-bottom:4px">'+q.w.em+'</div>':'')+'<div style="font-weight:800;font-size:1.6rem;color:#fff">'+q.w.c+'</div><div class="pk" style="font-size:.72rem;font-weight:600">'+(l==="bg"?q.w.p:q.w.pe)+'</div></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  q.o.forEach(function(o,i){h+='<button style="padding:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;font-family:inherit;font-size:.85rem;color:rgba(255,255,255,.75);cursor:pointer;text-align:center;font-weight:600" onclick="ansSp('+o.k+')">'+o.t+'</button>';});
+  h+='</div>';return h;
+}
+function mkSpQ(){var src=pool().length?pool():V;var w=src[Math.floor(Math.random()*src.length)];var wr=sf(src.filter(function(x){return x.bg!==w.bg;})).slice(0,3);return{w:w,o:sf([{t:state.lang==="bg"?w.bg:w.en,k:true}].concat(wr.map(function(x){return{t:state.lang==="bg"?x.bg:x.en,k:false};})))};}
+function goSp(){state.spSc=0;state.spTm=60;state.spOn=true;state.spQ=mkSpQ();render();if(state.spTi)clearInterval(state.spTi);state.spTi=setInterval(function(){state.spTm--;if(state.spTm<=0){clearInterval(state.spTi);state.spOn=false;}render();},1000);}
+function ansSp(ok){if(ok){state.spSc++;state.xp+=3;}state.spQ=mkSpQ();render();}
 
-<div style={{maxWidth:860,margin:"0 auto",padding:"10px 10px 80px"}}>
-{tab===0&&<Les t={t} lang={lang} pool={pool}/>}
-{tab===1&&<Crd t={t} lang={lang} setXp={setXp} pool={pool}/>}
-{tab===2&&<Qz t={t} lang={lang} setXp={setXp} pool={pool}/>}
-{tab===3&&<Wr t={t} lang={lang} setXp={setXp} pool={pool}/>}
-{tab===4&&<Sp t={t} lang={lang} setXp={setXp} pool={pool}/>}
-{tab===5&&<Te t={t} lang={lang}/>}
-{tab===6&&<Dl t={t} lang={lang}/>}
-{tab===7&&<Gr t={t} lang={lang}/>}
-</div></div>);}
+// Techniques
+function rTe(t,l){
+  var b=l==="bg",tc=[
+    {i:"\u{1F3E0}",t:b?"Дворец на Паметта":"Memory Palace",d:b?"Свържи дума с място в дома.":"Link word to a place.",x:b?"Grüezi \u2192 зелен слон на вратата":"Grüezi \u2192 green elephant at door",c:"rgba(100,160,255,.08)"},
+    {i:"\u{1F517}",t:b?"Верижни Асоциации":"Chain Method",d:b?"Свържи думите в история.":"Chain words.",x:"Morge\u2192Zmorge\u2192Kafi\u2192Milch",c:"rgba(192,132,252,.08)"},
+    {i:"\u{1F4E6}",t:"Spaced Repetition",d:b?"Повтаряй преди да забравиш.":"Review before forgetting.",x:"1min \u2192 10min \u2192 1day \u2192 7days",c:"rgba(100,255,160,.06)"},
+    {i:"\u{1F3B5}",t:b?"Звукови Мнемоники":"Sound Mnemonics",d:b?"Свържи звука с подобна дума.":"Link sound to similar word.",x:b?"Uf Widerluege \u2192 Уф, видер лъже!":"Uf Widerluege \u2192 we-der-look",c:"rgba(255,170,40,.06)"},
+    {i:"\u270D\uFE0F",t:b?"Активно Припомняне":"Active Recall",d:b?"Затвори очи и се опитай.":"Close eyes and try.",x:b?"3 думи, 2 сек":"3 words, 2 sec",c:"rgba(255,107,157,.06)"}];
+  var h='<h2 style="font-weight:800;font-size:1.25rem;color:#fff;margin-bottom:4px">'+t.techTitle+'</h2><p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:14px">'+t.techDesc+'</p>';
+  tc.forEach(function(r){h+='<div class="G" style="background:'+r.c+'"><h3 style="font-weight:800;font-size:.98rem;margin-bottom:6px;color:#fff">'+r.i+' '+r.t+'</h3><p style="color:rgba(255,255,255,.5);font-size:.78rem;line-height:1.5;margin-bottom:8px">'+r.d+'</p><div style="border-radius:10px;padding:10px 14px;font-size:.76rem;background:rgba(0,0,0,.2);color:rgba(255,255,255,.55);border-left:3px solid #ff6b9d">'+r.x+'</div></div>';});
+  return h;
+}
 
-function Les({t,lang,pool}){const src=pool&&pool.length?pool:V;const[open,setOpen]=useState(null);const daily=src[Math.floor(Date.now()/86400000)%src.length];
-if(open!==null){const ws=src.filter(w=>w.cat===open);const clr=CATS[open]?.clr||"#D32F2F";
-return(<div><button onClick={()=>setOpen(null)} style={{background:"#fff",border:"1px solid #eee",color:"#666",fontFamily:"inherit",fontSize:".78rem",cursor:"pointer",padding:"5px 12px",borderRadius:20,marginBottom:8,fontWeight:600}}>{t.back}</button>
-<h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:10,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:"1.4rem"}}>{CATS[open].ic}</span>{lang==="bg"?CATS[open].bg:CATS[open].en}</h2>
-{ws.map((w,i)=>(<div key={i} className="gc" style={{borderLeft:"4px solid "+clr}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div style={{flex:1}}>
-<div style={{display:"flex",alignItems:"center",gap:5,marginBottom:2}}>{w.em&&<span style={{fontSize:"1.3rem"}}>{w.em}</span>}<span style={{fontWeight:800,color:"#333",fontSize:"1rem"}}>{w.c}</span></div>
-<div style={{color:"#D32F2F",fontSize:".72rem",fontWeight:700,background:"#FFF0F0",display:"inline-block",padding:"1px 8px",borderRadius:8,marginBottom:3}}>{lang==="bg"?w.p:w.pe}</div>
-<div style={{color:"#777",fontSize:".68rem",fontStyle:"italic",marginBottom:2}}>{w.x}</div>
-<div style={{color:"#666",fontSize:".72rem"}}>{"DE: "+w.d}</div>
-<div style={{color:"#D32F2F",fontSize:".88rem",fontWeight:700,marginTop:3}}>{lang==="bg"?w.bg:w.en}</div>
-<div style={{color:"#999",fontSize:".62rem",marginTop:2}}>{"💡 "+(lang==="bg"?w.mb:w.me)}</div>
-</div><div style={{display:"flex",flexDirection:"column",gap:3,marginLeft:6,flexShrink:0}}><Sb text={w.c} label={t.listen}/><Sb text={w.c} label={t.slowPlay} slow/><Sb text={w.x} label={t.example}/></div></div></div>))}</div>);}
-return(<div><h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:2}}>{"🇨🇭 "+t.tabs[0]}</h2><p style={{color:"#888",fontSize:".8rem",marginBottom:12}}>{t.lessonsDesc}</p>
-<div className="gc" style={{background:"linear-gradient(135deg,#FFF5F5,#FFF0F5)",border:"2px solid #FFCDD2",textAlign:"center",padding:16}}>
-<div style={{color:"#D32F2F",fontSize:".65rem",fontWeight:700,textTransform:"uppercase",letterSpacing:"1px"}}>{"🎯 "+t.wordOfDay}</div>
-<div style={{fontWeight:800,fontSize:"1.6rem",color:"#333",margin:"4px 0"}}>{daily.em&&<span style={{marginRight:6}}>{daily.em}</span>}{daily.c}</div>
-<div style={{color:"#D32F2F",fontSize:".75rem",fontWeight:600,background:"#FFF0F0",display:"inline-block",padding:"2px 10px",borderRadius:10,marginBottom:4}}>{lang==="bg"?daily.p:daily.pe}</div>
-<div style={{color:"#666",fontSize:".82rem",fontWeight:600}}>{lang==="bg"?daily.bg:daily.en}</div>
-<div style={{display:"flex",gap:5,justifyContent:"center",marginTop:8}}><Sb text={daily.c} label={t.listen}/><Sb text={daily.c} label={t.slowPlay} slow/></div></div>
-{CATS.map((ct,i)=>{const cnt=src.filter(w=>w.cat===i).length;return cnt>0&&(<div key={i} onClick={()=>setOpen(i)} className="gc" style={{cursor:"pointer",borderLeft:"4px solid "+ct.clr}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}><span style={{fontSize:"1.1rem"}}>{ct.ic}</span><span style={{fontSize:".55rem",fontWeight:700,padding:"2px 8px",borderRadius:10,background:ct.clr+"22",color:ct.clr}}>{cnt+" "+t.words}</span></div>
-<div style={{fontWeight:700,fontSize:".92rem",color:"#333"}}>{lang==="bg"?ct.bg:ct.en}</div>
-<div style={{fontSize:".65rem",color:"#999"}}>{src.filter(w=>w.cat===i).slice(0,5).map(w=>w.c).join(" • ")}</div></div>);})}
-</div>);}
-function Crd({t,lang,setXp,pool}){const src=pool&&pool.length?pool:V;const[cat,setCat]=useState(-1);const[deck,setDeck]=useState(()=>shuf(src));const[idx,setIdx]=useState(0);const[fl,setFl]=useState(false);
-useEffect(()=>{const s=cat===-1?src:src.filter(w=>w.cat===cat);setDeck(shuf(s.length?s:src));setIdx(0);setFl(false);},[pool,cat]);
-const w=deck.length?deck[idx%deck.length]:null;const rate=r=>{if(r>=3)setXp(x=>x+5);setIdx(i=>i+1);setFl(false);};
-return(<div><h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:3}}>{t.tabs[1]}</h2><p style={{color:"#888",fontSize:".8rem",marginBottom:10}}>{t.flashDesc}</p>
-<div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:14}}>
-<button onClick={()=>setCat(-1)} style={{background:cat===-1?"#FFEBEE":"#fff",border:"2px solid "+(cat===-1?"#EF9A9A":"#eee"),borderRadius:12,padding:"5px 8px",fontSize:".55rem",color:cat===-1?"#D32F2F":"#888",cursor:"pointer",fontFamily:"inherit",display:"flex",flexDirection:"column",alignItems:"center",gap:1,minWidth:42,fontWeight:700}}><span style={{fontSize:".9rem"}}>{"🌐"}</span>{t.all}</button>
-{CATS.map((c,i)=>{const n=src.filter(w=>w.cat===i).length;return n>0?(<button key={i} onClick={()=>setCat(i)} style={{background:cat===i?c.clr+"15":"#fff",border:"2px solid "+(cat===i?c.clr:"#eee"),borderRadius:12,padding:"5px 6px",fontSize:".52rem",color:cat===i?c.clr:"#888",cursor:"pointer",fontFamily:"inherit",display:"flex",flexDirection:"column",alignItems:"center",gap:1,minWidth:42,fontWeight:700}}><span style={{fontSize:".9rem"}}>{c.ic}</span>{lang==="bg"?c.bg:c.en}</button>):null;})}</div>
-{!w&&<div style={{textAlign:"center",padding:24,color:"#999"}}>{lang==="bg"?"Няма думи.":"No words."}</div>}
-{w&&<><div onClick={()=>setFl(!fl)} style={{perspective:1000,maxWidth:360,margin:"0 auto",cursor:"pointer"}}><div style={{minHeight:220,position:"relative",transformStyle:"preserve-3d",transition:"transform .45s cubic-bezier(.4,0,.2,1)",transform:fl?"rotateY(180deg)":"none"}}>
-<div style={{position:"absolute",width:"100%",minHeight:220,backfaceVisibility:"hidden",background:"linear-gradient(145deg,#fff,#FAFAFA)",borderRadius:20,border:"2px solid #eee",boxShadow:"0 4px 16px rgba(0,0,0,.06)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:22,textAlign:"center"}}>
-{w.em&&<div style={{fontSize:"2.8rem",marginBottom:4}}>{w.em}</div>}
-<div style={{fontWeight:800,fontSize:"1.7rem",color:"#333",marginBottom:4}}>{w.c}</div>
-<div style={{color:"#D32F2F",fontWeight:700,fontSize:".78rem",background:"#FFF0F0",padding:"2px 12px",borderRadius:12,marginBottom:8}}>{lang==="bg"?w.p:w.pe}</div>
-<div style={{display:"flex",gap:5}}><Sb text={w.c} label={t.listen}/><Sb text={w.c} label={t.slowPlay} slow/></div>
-<div style={{color:"#bbb",fontSize:".58rem",marginTop:10}}>{t.flip}</div></div>
-<div style={{position:"absolute",width:"100%",minHeight:220,backfaceVisibility:"hidden",transform:"rotateY(180deg)",background:"linear-gradient(145deg,#FFF5F5,#FFF0F5)",borderRadius:20,border:"2px solid #FFCDD2",boxShadow:"0 4px 16px rgba(211,47,47,.08)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:22,textAlign:"center"}}>
-{w.em&&<div style={{fontSize:"2rem",marginBottom:3}}>{w.em}</div>}
-<div style={{color:"#D32F2F",fontSize:"1.2rem",fontWeight:800,marginBottom:3}}>{lang==="bg"?w.bg:w.en}</div>
-<div style={{color:"#888",fontSize:".78rem",marginBottom:2}}>{"DE: "+w.d}</div>
-<div style={{color:"#999",fontSize:".68rem",fontStyle:"italic",marginBottom:3}}>{w.x}</div>
-<div style={{color:"#aaa",fontSize:".62rem",marginBottom:6}}>{"💡 "+(lang==="bg"?w.mb:w.me)}</div>
-<div style={{display:"flex",gap:4}}><Sb text={w.c} label={t.listen}/><Sb text={w.x} label={t.example}/></div></div></div></div>
-<div style={{display:"flex",justifyContent:"center",gap:6,marginTop:14}}>
-<button onClick={()=>rate(1)} style={{padding:"8px 18px",border:"2px solid #FFCDD2",borderRadius:14,background:"#FFF5F5",color:"#D32F2F",fontFamily:"inherit",fontSize:".76rem",fontWeight:700,cursor:"pointer"}}>{"❌ "+t.dontKnow}</button>
-<button onClick={()=>rate(2)} style={{padding:"8px 18px",border:"2px solid #FFE0B2",borderRadius:14,background:"#FFF8E1",color:"#E65100",fontFamily:"inherit",fontSize:".76rem",fontWeight:700,cursor:"pointer"}}>{"🤔 "+t.hard}</button>
-<button onClick={()=>rate(4)} style={{padding:"8px 18px",border:"2px solid #C8E6C9",borderRadius:14,background:"#F1F8E9",color:"#2E7D32",fontFamily:"inherit",fontSize:".76rem",fontWeight:700,cursor:"pointer"}}>{"✅ "+t.know}</button></div>
-<div style={{textAlign:"center",color:"#bbb",fontSize:".7rem",marginTop:6}}>{deck.length?(idx%deck.length)+1:0}/{deck.length}</div></>}</div>);}
-function Qz({t,lang,setXp,pool}){const src=pool&&pool.length?pool:V;const[qs,setQs]=useState([]);const[qi,setQi]=useState(0);const[sc,setSc]=useState(0);const[ans,setAns]=useState(null);const[on,setOn]=useState(false);
-const go=()=>{const p=shuf(src).slice(0,12).map(w=>{const wr=shuf(src.filter(x=>x.bg!==w.bg)).slice(0,3);return{w,opts:shuf([{t:lang==="bg"?w.bg:w.en,ok:true},...wr.map(x=>({t:lang==="bg"?x.bg:x.en,ok:false}))])};});setQs(p);setQi(0);setSc(0);setAns(null);setOn(true);};
-const pick=(ok,i)=>{if(ans!==null)return;setAns(i);if(ok){setSc(s=>s+1);setXp(x=>x+10);}setTimeout(()=>{setAns(null);setQi(qi+1);},900);};
-if(!on)return(<div><h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:3}}>{t.tabs[2]}</h2><p style={{color:"#888",fontSize:".8rem",marginBottom:16}}>{t.quizDesc}</p><div style={{textAlign:"center"}}><button onClick={go} style={{background:"#D32F2F",border:"none",borderRadius:14,padding:"12px 30px",color:"#fff",fontFamily:"inherit",fontSize:".9rem",fontWeight:700,cursor:"pointer",boxShadow:"0 3px 8px rgba(211,47,47,.25)"}}>{"🚀 "+t.start}</button></div></div>);
-if(qi>=qs.length){const p=Math.round(sc/qs.length*100);return(<div style={{textAlign:"center",padding:30}}><div style={{fontSize:"3.2rem",fontWeight:800,color:p>=60?"#2E7D32":"#D32F2F"}}>{p+"%"}</div><p style={{color:"#888"}}>{p>=90?t.excellent:p>=60?t.great:p>=40?t.good:t.tryAgain}</p><button onClick={go} style={{marginTop:14,background:"#D32F2F",border:"none",borderRadius:14,padding:"10px 26px",color:"#fff",fontFamily:"inherit",fontSize:".85rem",fontWeight:700,cursor:"pointer"}}>{"🔄 "+t.newQuiz}</button></div>);}
-const q=qs[qi];const lt=["A","B","C","D"];
-return(<div><div style={{color:"#bbb",fontSize:".68rem",marginBottom:4,fontWeight:600}}>{t.q+" "+(qi+1)+"/"+qs.length}</div>
-<div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>{q.w.em&&<span style={{fontSize:"1.5rem"}}>{q.w.em}</span>}<span style={{fontSize:"1.05rem",fontWeight:700,color:"#333"}}>{t.whatMeans+" "}<span style={{color:"#D32F2F",fontWeight:800}}>"{q.w.c}"</span>?</span></div>
-<div style={{color:"#D32F2F",fontSize:".7rem",fontWeight:600,marginBottom:2}}>{lang==="bg"?q.w.p:q.w.pe}</div>
-<div style={{display:"flex",gap:4,marginBottom:10,flexWrap:"wrap"}}><Sb text={q.w.c} label={t.listen}/><Sb text={q.w.c} label={t.slowPlay} slow/><Sb text={q.w.x} label={t.example}/></div>
-<div style={{display:"flex",flexDirection:"column",gap:6}}>{q.opts.map((o,i)=>{let bg="#fff",bc="#eee",cl="#333";if(ans!==null){if(o.ok){bg="#E8F5E9";bc="#66BB6A";cl="#2E7D32";}else if(i===ans){bg="#FFEBEE";bc="#EF5350";cl="#C62828";}}return(<button key={i} onClick={()=>pick(o.ok,i)} style={{background:bg,border:"2px solid "+bc,borderRadius:12,padding:"10px 13px",fontFamily:"inherit",fontSize:".85rem",color:cl,cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:8,fontWeight:600}}><span style={{width:24,height:24,borderRadius:8,background:"#F5F5F5",border:"1px solid #ddd",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:".7rem",flexShrink:0,color:"#888"}}>{lt[i]}</span>{o.t}</button>);})}</div></div>);}
-function Wr({t,lang,setXp,pool}){const src=pool&&pool.length?pool:V;const[deck]=useState(()=>shuf(src));const[idx,setIdx]=useState(0);const[val,setVal]=useState("");const[fb,setFb]=useState(null);const w=deck[idx%deck.length];
-const chk=()=>{if(val.trim().toLowerCase()===w.c.toLowerCase()){setFb("ok");setXp(x=>x+15);}else setFb("no");};const nxt=()=>{setIdx(i=>i+1);setVal("");setFb(null);};
-return(<div><h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:3}}>{t.tabs[3]}</h2><p style={{color:"#888",fontSize:".8rem",marginBottom:12}}>{t.writeDesc}</p>
-<div className="gc" style={{padding:16}}><div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>{w.em&&<span style={{fontSize:"1.5rem"}}>{w.em}</span>}<span style={{fontSize:"1.1rem",fontWeight:700,color:"#333"}}>{lang==="bg"?w.bg:w.en}</span></div>
-<div style={{color:"#999",fontSize:".72rem",marginBottom:10}}>{t.writeHint+" (DE: "+w.d+")"}</div>
-<input value={val} onChange={e=>setVal(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")chk();}} placeholder="..." autoComplete="off" style={{width:"100%",background:"#FAFAFA",border:"2px solid "+(fb==="ok"?"#66BB6A":fb==="no"?"#EF5350":"#ddd"),borderRadius:12,padding:"10px 12px",color:"#333",fontFamily:"monospace",fontSize:"1rem",outline:"none"}}/>
-{fb==="ok"&&<div style={{marginTop:6,padding:"6px 10px",borderRadius:10,background:"#E8F5E9",color:"#2E7D32",fontSize:".82rem",fontWeight:600}}>{t.correct}</div>}
-{fb==="no"&&<div style={{marginTop:6,padding:"6px 10px",borderRadius:10,background:"#FFEBEE",color:"#C62828",fontSize:".82rem",fontWeight:600}}>{t.correctIs+": "}<b>{w.c}</b></div>}
-<div style={{display:"flex",gap:5,marginTop:10,justifyContent:"center",flexWrap:"wrap"}}>
-{[{a:chk,l:t.check},{a:()=>{setVal(w.c);setFb(null);},l:t.show},{a:nxt,l:t.next+" →"}].map((b,i)=>(<button key={i} onClick={b.a} style={{padding:"7px 14px",border:"2px solid #eee",borderRadius:10,background:"#fff",color:"#555",fontFamily:"inherit",fontSize:".76rem",fontWeight:600,cursor:"pointer"}}>{b.l}</button>))}
-<Sb text={w.c} label={t.listen}/><Sb text={w.c} label={t.slowPlay} slow/></div></div>
-<div style={{textAlign:"center",color:"#bbb",fontSize:".68rem",marginTop:6}}>{(idx%deck.length)+1}/{deck.length}</div></div>);}
+// Dialogs
+function rDl(t,l){
+  var s=state,d=DLGS[s.dlSel];
+  var h='<h2 style="font-weight:800;font-size:1.25rem;color:#fff;margin-bottom:12px">'+t.tabs[6]+'</h2><div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px">';
+  DLGS.forEach(function(dl,i){h+='<button style="background:'+(s.dlSel===i?'rgba(255,107,157,.1)':'rgba(255,255,255,.03)')+';border:1px solid '+(s.dlSel===i?'rgba(255,107,157,.25)':'rgba(255,255,255,.06)')+';border-radius:14px;padding:5px 14px;font-size:.7rem;color:'+(s.dlSel===i?'#ff6b9d':'rgba(255,255,255,.4)')+';cursor:pointer;font-family:inherit;font-weight:600" onclick="state.dlSel='+i+';render();">'+dl.ic+' '+(l==="bg"?dl.bg:dl.en)+'</button>';});
+  h+='</div><div class="G" style="padding:16px">';
+  d.lines.forEach(function(ln,i){
+    h+='<div class="dlg-line"'+(i===d.lines.length-1?' style="border-bottom:none"':'')+'><span class="dlg-av" style="color:'+(ln.s==="A"?'#ff6b9d':'#64b5f6')+';background:'+(ln.s==="A"?'rgba(255,107,157,.1)':'rgba(100,181,246,.1)')+'">'+ln.s+'</span><div style="flex:1"><div style="font-size:.86rem;font-weight:600;color:#fff">'+ln.c+'</div><div style="color:rgba(255,255,255,.35);font-size:.7rem;font-style:italic;margin-top:2px">'+(l==="bg"?ln.bg:ln.en)+'</div></div></div>';
+  });
+  h+='</div>';return h;
+}
 
-function Sp({t,lang,setXp,pool}){const src=pool&&pool.length?pool:V;const[on,setOn]=useState(false);const[tm,setTm]=useState(60);const[sc,setSc]=useState(0);const[q,setQ]=useState(null);const ref=useRef(null);
-const mk=()=>{const w=src[Math.floor(Math.random()*src.length)];const wr=shuf(src.filter(x=>x.bg!==w.bg)).slice(0,3);return{w,opts:shuf([{t:lang==="bg"?w.bg:w.en,ok:true},...wr.map(x=>({t:lang==="bg"?x.bg:x.en,ok:false}))])};};
-const go=()=>{setSc(0);setTm(60);setOn(true);setQ(mk());ref.current=setInterval(()=>{setTm(v=>{if(v<=1){clearInterval(ref.current);setOn(false);return 0;}return v-1;});},1000);};
-useEffect(()=>()=>clearInterval(ref.current),[]);const ans=ok=>{if(ok){setSc(s=>s+1);setXp(x=>x+3);}setQ(mk());};
-if(!on&&tm===0)return(<div style={{textAlign:"center",padding:30}}><div style={{fontSize:"3.2rem",fontWeight:800,color:"#D32F2F"}}>{sc}</div><p style={{color:"#888"}}>{t.speedEnd}</p><button onClick={go} style={{marginTop:14,background:"#D32F2F",border:"none",borderRadius:14,padding:"10px 26px",color:"#fff",fontFamily:"inherit",fontSize:".85rem",fontWeight:700,cursor:"pointer"}}>{t.start}</button></div>);
-if(!on)return(<div><h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:3}}>{t.speedTitle}</h2><p style={{color:"#888",fontSize:".8rem",marginBottom:16}}>{t.speedDesc}</p><div style={{textAlign:"center"}}><button onClick={go} style={{background:"#D32F2F",border:"none",borderRadius:14,padding:"12px 30px",color:"#fff",fontFamily:"inherit",fontSize:".9rem",fontWeight:700,cursor:"pointer",boxShadow:"0 3px 8px rgba(211,47,47,.25)"}}>{t.start}</button></div></div>);
-return(<div><div style={{display:"flex",justifyContent:"space-between",marginBottom:10,alignItems:"center"}}><span style={{fontFamily:"monospace",fontSize:"1.6rem",fontWeight:800,color:tm<=10?"#C62828":"#D32F2F"}}>{tm}s</span><span style={{color:"#F57F17",fontWeight:700}}>{"⭐ "+sc+" "+t.points}</span></div>
-{q&&<><div style={{textAlign:"center",margin:"12px 0"}}>{q.w.em&&<div style={{fontSize:"2rem",marginBottom:3}}>{q.w.em}</div>}<div style={{fontWeight:800,fontSize:"1.6rem",color:"#333"}}>{q.w.c}</div><div style={{color:"#D32F2F",fontSize:".72rem",fontWeight:600}}>{lang==="bg"?q.w.p:q.w.pe}</div></div>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>{q.opts.map((o,i)=>(<button key={i} onClick={()=>ans(o.ok)} style={{padding:12,background:"#fff",border:"2px solid #eee",borderRadius:12,fontFamily:"inherit",fontSize:".85rem",color:"#333",cursor:"pointer",textAlign:"center",fontWeight:600}}>{o.t}</button>))}</div></>}</div>);}
+// Grammar
+function rGr(t,l){
+  function row(c,hd){var h='<tr>';c.forEach(function(v,i){var tag=hd?'th':'td';var st=hd?'text-align:left;padding:6px 10px;font-size:.52rem;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.25);background:rgba(255,255,255,.025)':'padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem;color:'+(i>=1?'#c084fc':'rgba(255,255,255,.45)')+';font-family:'+(i>=1?'monospace':'inherit')+';font-weight:'+(i>=1?700:400);h+='<'+tag+' style="'+st+'">'+v+'</'+tag+'>';});return h+'</tr>';}
+  var df=[{t:t.noPraet,h:"Ich ging",c:"Ich bi gange",n:t.alwaysPerf,l:"rgba(100,160,255,.08)",b:"#64b5f6"},{t:t.goInf,h:"Ich gehe einkaufen",c:"Ich gang go poschte",n:t.goNote,l:"rgba(192,132,252,.08)",b:"#c084fc"},{t:t.dimLi,h:"H\u00e4uschen",c:"H\u00fc\u00fcsli",n:t.dimNote,l:"rgba(100,255,160,.06)",b:"#6dffa8"},{t:t.noSz,h:"gro\u00df",c:"gross",n:t.noSzNote,l:"rgba(255,107,157,.06)",b:"#ff6b9d"}];
+  var h='<h2 style="font-weight:800;font-size:1.25rem;color:#fff;margin-bottom:14px">'+t.gramTitle+'</h2>';
+  h+='<div class="G" style="padding:16px"><h3 style="font-size:.92rem;margin-bottom:10px;color:#fff">'+t.keyDiff+'</h3>';
+  df.forEach(function(r){h+='<div style="border-radius:12px;padding:10px 14px;margin-bottom:8px;background:'+r.l+';border:1px solid rgba(255,255,255,.05);font-size:.8rem;line-height:1.5"><b style="color:'+r.b+'">'+r.t+'</b><br><span style="color:rgba(255,255,255,.3)">HD: </span><span style="color:rgba(255,255,255,.5)">'+r.h+'</span><br><span style="color:rgba(255,255,255,.3)">CH: </span><span style="color:#fff;font-family:monospace;font-weight:700">'+r.c+'</span><br><span style="color:rgba(255,255,255,.25);font-size:.7rem">'+r.n+'</span></div>';});
+  h+='</div>';
+  h+='<div class="G" style="padding:16px;margin-top:10px"><h3 style="font-size:.92rem;margin-bottom:8px;color:#fff">si ('+t.beV+') & ha ('+t.haveV+')</h3><table style="width:100%;border-collapse:collapse"><thead>'+row([t.person,"si","ha"],true)+'</thead><tbody>'+row(["ich","bi","ha"])+row(["du","bisch","h\u00e4sch"])+row(["er/si/es","isch","h\u00e4t"])+row(["mir","sind","h\u00e4nd"])+row(["ihr","sind","h\u00e4nd"])+row(["si","sind","h\u00e4nd"])+'</tbody></table></div>';
+  h+='<div class="G" style="padding:16px;margin-top:10px"><h3 style="font-size:.92rem;margin-bottom:8px;color:#fff">gaa ('+t.goV+') & choo ('+t.comeV+')</h3><table style="width:100%;border-collapse:collapse"><thead>'+row([t.person,"gaa","choo"],true)+'</thead><tbody>'+row(["ich","gang","chume"])+row(["du","gasch","chunsch"])+row(["er/si/es","gaat","chunnt"])+row(["mir","g\u00f6nd","ch\u00f6med"])+row(["ihr","g\u00f6nd","ch\u00f6med"])+row(["si","g\u00f6nd","ch\u00f6med"])+'</tbody></table></div>';
+  return h;
+}
 
-function Te({t,lang}){const bg=lang==="bg";const tcs=[
-{ic:"🏠",tl:bg?"Дворец на Паметта":"Memory Palace",ds:bg?"Свържи дума с място в дома ти.":"Link each word to a place.",ex:bg?"Grüezi → зелен слон на вратата":"Grüezi → green elephant at door",clr:"#E3F2FD"},
-{ic:"🔗",tl:bg?"Верижни Асоциации":"Chain Method",ds:bg?"Свържи думите в история.":"Chain words into a story.",ex:"Morge→Zmorge→Kafi→Milch→Chue",clr:"#F3E5F5"},
-{ic:"📦",tl:"Spaced Repetition",ds:bg?"Повтаряй преди да забравиш.":"Review before you forget.",ex:"1min → 10min → 1day → 7days",clr:"#E8F5E9"},
-{ic:"🎵",tl:bg?"Звукови Мнемоники":"Sound Mnemonics",ds:bg?"Свържи звука с подобна дума.":"Link sound to similar word.",ex:bg?"Uf Widerluege → Уф, видер лъже!":"Uf Widerluege → we-der-look-again",clr:"#FFF3E0"},
-{ic:"✍️",tl:bg?"Активно Припомняне":"Active Recall",ds:bg?"Затвори очи и се опитай.":"Close eyes and try.",ex:bg?"3 думи, 2 сек, 1 изречение":"3 words, 2 sec, 1 sentence",clr:"#FCE4EC"}];
-return(<div><h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:3}}>{t.techTitle}</h2><p style={{color:"#888",fontSize:".8rem",marginBottom:12}}>{t.techDesc}</p>{tcs.map((tc,i)=>(<div key={i} className="gc" style={{background:tc.clr,padding:16}}><h3 style={{fontWeight:800,fontSize:"1rem",marginBottom:4,color:"#333"}}>{tc.ic+" "+tc.tl}</h3><p style={{color:"#555",fontSize:".8rem",lineHeight:1.45,marginBottom:6}}>{tc.ds}</p><div style={{borderRadius:10,padding:"8px 12px",fontSize:".75rem",lineHeight:1.5,background:"rgba(255,255,255,.6)",color:"#555",borderLeft:"3px solid #D32F2F",whiteSpace:"pre-line"}}>{tc.ex}</div></div>))}</div>);}
+// Init
+au();
+render();
 
-function Dl({t,lang}){const[sel,setSel]=useState(0);const d=DLGS[sel];const playAll=()=>{let dl=0;d.lines.forEach(l=>{setTimeout(()=>playWordByText(l.c.split(",")[0].split(" ").slice(0,2).join(" ")),dl);dl+=2000;});};
-return(<div><h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:10}}>{t.tabs[6]}</h2>
-<div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:14}}>{DLGS.map((dl,i)=>(<button key={i} onClick={()=>setSel(i)} style={{background:sel===i?"#FFEBEE":"#fff",border:"2px solid "+(sel===i?"#EF9A9A":"#eee"),borderRadius:14,padding:"4px 12px",fontSize:".7rem",color:sel===i?"#D32F2F":"#888",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>{dl.ic+" "+(lang==="bg"?dl.bg:dl.en)}</button>))}</div>
-<div className="gc" style={{padding:14}}>{d.lines.map((l,i)=>(<div key={i} style={{display:"flex",gap:6,marginBottom:10,alignItems:"flex-start",padding:"6px 0",borderBottom:i<d.lines.length-1?"1px solid #f0f0f0":"none"}}>
-<span style={{fontWeight:800,fontSize:".68rem",color:l.s==="A"?"#D32F2F":"#1565C0",background:l.s==="A"?"#FFEBEE":"#E3F2FD",width:22,height:22,borderRadius:11,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{l.s}</span>
-<div style={{flex:1}}><div style={{fontSize:".85rem",fontWeight:600,color:"#333"}}>{l.c}</div><div style={{color:"#888",fontSize:".7rem",fontStyle:"italic",marginTop:1}}>{lang==="bg"?l.bg:l.en}</div></div>
-<div style={{display:"flex",gap:3,flexShrink:0}}><Sb text={l.c}/><Sb text={l.c} slow/></div></div>))}
-<div style={{textAlign:"center",marginTop:8}}><button onClick={playAll} style={{background:"#FFEBEE",border:"2px solid #FFCDD2",borderRadius:14,padding:"7px 18px",color:"#D32F2F",fontSize:".76rem",fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{"🔊 "+t.listenAll}</button></div></div></div>);}
-
-function Gr({t,lang}){
-const R=({cells})=>(<tr>{cells.map((c,i)=>(<td key={i} style={{padding:"7px 9px",borderBottom:"1px solid #f0f0f0",fontSize:".78rem",color:i>=1?"#D32F2F":"#666",fontFamily:i>=1?"monospace":"inherit",fontWeight:i>=1?700:400}}>{c}</td>))}</tr>);
-const H=({cells})=>(<tr>{cells.map((c,i)=>(<th key={i} style={{textAlign:"left",padding:"5px 9px",fontSize:".55rem",textTransform:"uppercase",letterSpacing:".5px",color:"#999",background:"#F5F5F5"}}>{c}</th>))}</tr>);
-return(<div><h2 style={{fontWeight:800,fontSize:"1.3rem",color:"#333",marginBottom:12}}>{t.gramTitle}</h2>
-<div className="gc" style={{padding:14}}><h3 style={{fontSize:".92rem",marginBottom:8,color:"#333"}}>{t.keyDiff}</h3>
-{[{tl:t.noPraet,hd:"Ich ging nach Hause",ch:"Ich bi hei gange",nt:t.alwaysPerf,clr:"#E3F2FD"},{tl:t.goInf,hd:"Ich gehe einkaufen",ch:"Ich gang go poschte",nt:t.goNote,clr:"#F3E5F5"},{tl:t.dimLi,hd:"Häuschen, Kätzchen",ch:"Hüüsli, Büsli",nt:t.dimNote,clr:"#E8F5E9"},{tl:t.dblVow,hd:"Straße, See",ch:"Straass, See",nt:t.dblNote,clr:"#FFF3E0"},{tl:t.noSz,hd:"Straße, groß",ch:"Strass, gross",nt:t.noSzNote,clr:"#FCE4EC"}].map((r,i)=>(<div key={i} style={{borderRadius:10,padding:"9px 11px",marginBottom:6,background:r.clr,fontSize:".8rem",lineHeight:1.45}}><b style={{color:"#D32F2F"}}>{r.tl}</b><br/><span style={{color:"#999"}}>HD: </span><span style={{color:"#555"}}>{r.hd}</span><br/><span style={{color:"#999"}}>CH: </span><span style={{color:"#333",fontFamily:"monospace",fontWeight:700}}>{r.ch}</span><br/><span style={{color:"#999",fontSize:".7rem"}}>{r.nt}</span></div>))}</div>
-<div className="gc" style={{padding:14}}><h3 style={{fontSize:".92rem",marginBottom:6}}>{"si ("+t.beV+") & ha ("+t.haveV+")"}</h3>
-<table style={{width:"100%",borderCollapse:"collapse"}}><thead><H cells={[t.person,"si","ha"]}/></thead><tbody><R cells={["ich","bi","ha"]}/><R cells={["du","bisch","häsch"]}/><R cells={["er/si/es","isch","hät"]}/><R cells={["mir","sind","händ"]}/><R cells={["ihr","sind","händ"]}/><R cells={["si","sind","händ"]}/></tbody></table></div>
-<div className="gc" style={{padding:14}}><h3 style={{fontSize:".92rem",marginBottom:6}}>{"gaa ("+t.goV+") & choo ("+t.comeV+")"}</h3>
-<table style={{width:"100%",borderCollapse:"collapse"}}><thead><H cells={[t.person,"gaa","choo"]}/></thead><tbody><R cells={["ich","gang","chume"]}/><R cells={["du","gasch","chunsch"]}/><R cells={["er/si/es","gaat","chunnt"]}/><R cells={["mir","gönd","chömed"]}/><R cells={["ihr","gönd","chömed"]}/><R cells={["si","gönd","chömed"]}/></tbody></table></div></div>);}
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);</script></body></html>
+</script>
+</body></html>
